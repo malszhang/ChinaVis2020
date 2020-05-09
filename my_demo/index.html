@@ -1,0 +1,99 @@
+<html>
+<head>
+    <title>elementUi</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="lib/elementui/theme-chalk/index.css" type="text/css">
+    <style>
+        html{
+            height: 100%;
+        }
+        body {
+            margin: 5px;
+            height: 100%;
+        }
+        /* 所有 */
+        #app {
+            width: 100%;
+            height: 100%;
+        }
+        .grid-content-header {
+            border-radius: 5px;
+            min-height: 50px;
+            border:1px solid #171a18;
+        }
+        .grid-content {
+            border-radius: 5px;
+            min-height: 936px;
+            border:1px solid #111312;
+        }
+        .grid-content-right-top{
+            border-radius: 5px;
+            min-height: 461px;
+            border:1px solid #111312;
+        }
+        .grid-content-right-bottom{
+            border-radius: 5px;
+            min-height: 461px;
+            border:1px solid #111312;
+        }
+        .row-bg {
+            padding: 0px 0px 10px 0px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-row :gutter="10" class="row-bg">
+        <el-col :span="24">
+            <div class="grid-content-header bg-purple">
+                <div style="text-align: center;font-size: 20px">
+                    组队打怪
+                </div>
+            </div>
+        </el-col>
+    </el-row>
+
+    <el-row :gutter="10" class="row-bg">
+        <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
+            <div class="grid-content">
+                <div id="tendency" style="width: 100%;height:936px">
+                </div>
+            </div>
+        </el-col>
+        <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
+            <el-row :gutter="10" class="row-bg">
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                    <div class="grid-content-right-top bg-purple">
+                        右上
+                    </div>
+                </el-col>
+            </el-row>
+
+            <el-row :gutter="10" class="row-bg">
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                    <div class="grid-content-right-bottom bg-purple-light">
+                        右下
+                    </div>
+                </el-col>
+            </el-row>
+        </el-col>
+    </el-row>
+</div>
+<!-- 引入组件库 -->
+<script type="text/javascript" src="lib/vue.js"></script>
+<script type="text/javascript" src="lib/elementui/index.js"></script>
+<script type="text/javascript" src="lib/jquery.js"></script>
+<script type="text/javascript" src="lib/echarts.min.js"></script>
+<script type="text/javascript" src="js/tendencyChart.js"></script>
+<script type="text/javascript">
+    new Vue({
+        el: "#app",
+        mounted(){
+            drawTendency();
+        }
+    });
+</script>
+</body>
+</html>
