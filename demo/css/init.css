@@ -1,0 +1,42 @@
+html {
+    height: 100%;
+}
+
+body {
+    margin: 5px;
+    height: 100%;
+}
+
+/* 所有 */
+#app {
+    width: 100%;
+    height: 100%;
+}
+
+.grid-content-header {
+    border-radius: 5px;
+    min-height: 50px;
+    border: 1px solid #171a18;
+}
+
+.grid-content {
+    border-radius: 5px;
+    min-height: 936px;
+    border: 1px solid #111312;
+}
+
+.grid-content-right-top {
+    border-radius: 5px;
+    min-height: 461px;
+    border: 1px solid #111312;
+}
+
+.grid-content-right-bottom {
+    border-radius: 5px;
+    min-height: 461px;
+    border: 1px solid #111312;
+}
+
+.row-bg {
+    padding: 0px 0px 10px 0px;
+}
