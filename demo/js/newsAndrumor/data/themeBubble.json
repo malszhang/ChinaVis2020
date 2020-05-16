@@ -1,0 +1,91 @@
+{
+    "children": [{
+            "name": "D3.js",
+            "weight": 100
+        },
+        {
+            "name": "Echarts.js",
+            "weight": 77
+        },
+        {
+            "name": "JavaScript",
+            "weight": 70
+        },
+        {
+            "name": "C/C++",
+            "weight": 66
+        },
+        {
+            "name": "Java",
+            "weight": 66
+        },
+        {
+            "name": "PHP",
+            "weight": 56
+        },
+        {
+            "name": "Ruby",
+            "weight": 69
+        },
+        {
+            "name": "Python",
+            "weight": 73
+        },
+        {
+            "name": "Windows",
+            "weight": 44
+        },
+        {
+            "name": "Linux",
+            "weight": 90
+        },
+        {
+            "name": "Unix",
+            "weight": 85
+        },
+        {
+            "name": "JSON",
+            "weight": 40
+        },
+        {
+            "name": "XML",
+            "weight": 20
+        },
+        {
+            "name": "JQuery",
+            "weight": 44
+        },
+        {
+            "name": "AngularJS",
+            "weight": 44
+        },
+        {
+            "name": "ajax",
+            "weight": 20
+        },
+        {
+            "name": "Node.js",
+            "weight": 78
+        },
+        {
+            "name": "Go",
+            "weight": 54
+        },
+        {
+            "name": "Swift",
+            "weight": 24
+        },
+        {
+            "name": "HTTP",
+            "weight": 8
+        },
+        {
+            "name": "Android",
+            "weight": 14
+        },
+        {
+            "name": "iOS",
+            "weight": 10
+        }
+    ]
+}

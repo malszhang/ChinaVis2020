@@ -21,7 +21,7 @@ body {
 
 .grid-content {
     border-radius: 5px;
-    min-height: 936px;
+    height: 100%;
     border: 1px solid #111312;
 }
 
