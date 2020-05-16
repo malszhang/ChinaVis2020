@@ -1,0 +1,11 @@
+.bubble circle{
+    stroke: black;
+    stroke-width: 2px;
+}
+
+.bubble text{
+    fill: black;
+    font-size: 14px;
+    font-family: arial;
+    text-anchor: middle;
+}

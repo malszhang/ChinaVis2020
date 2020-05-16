@@ -1,0 +1,159 @@
+<html>
+
+	<head>
+		<title>疫.谣言与新闻</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="lib/elementui/theme-chalk/index.css" type="text/css">
+		<style>
+			body {
+            margin: 0px;
+        }
+
+        /* 所有 */
+        #app {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 头 */
+        .header {
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 60px;
+            background-color: #24292e;
+            text-align: center;
+        }
+
+        .header div {
+            display: inline;
+        }
+
+        .title {
+        }
+
+        .author {
+            float: right;
+        }
+
+        .author-img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .author-github {
+            cursor: pointer;
+        }
+
+        /* 内容区 */
+        .container {
+            min-height: 600px;
+            width: 100%;
+            height: 100%
+        }
+
+        /* 左边内容区 */
+        .left {
+            color: #4b595f;
+            /* width: 10%; */
+        }
+
+        .left .totalUl {
+            height: 93%;
+        }
+
+        /* 右边内容区 */
+        .right {
+            min-width: 200px;
+        }
+
+        tbody {
+            font-size: 15px;
+            color: #4b595f;
+        }
+
+    </style>
+	</head>
+	<body>
+		<div id="app">
+			<el-container class="container">
+				<el-header class="header">
+					<div class="title">
+						<span>疫.谣言与新闻</span>
+					</div>
+				</el-header>
+
+				<el-container>
+					<el-aside class="left" style="width:200px">
+						<el-menu :default-active="activeIndex" class="totalUl">
+							<!-- <el-menu-item index="1" @click="open(aboutMeUrl)"><i class="el-icon-service"></i>关于我们</el-menu-item> -->
+							<el-submenu :index="firstMenu.id" v-for="firstMenu in menus" :key="firstMenu.id">
+								<template slot="title"><i :class="firstMenu.iconClass"></i>{{ firstMenu.name }}</template>
+								<el-menu-item-group v-for="secondMenu in firstMenu.children" :key="secondMenu.id">
+									<template slot="title">{{ secondMenu.name }}</template>
+									<el-menu-item v-for="thirdMenu in secondMenu.children" :index="thirdMenu.id" :key="thirdMenu.id" @click="open(thirdMenu.url)">{{ thirdMenu.name }}
+									</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+					</el-aside>
+
+					<el-main class="right">
+						<iframe style="width:100%; height:100%; border: 0;" :src="iframeUrl"></iframe>
+					</el-main>
+
+				</el-container>
+			</el-container>
+		</div>
+		<!-- 引入组件库 -->
+		<script type="text/javascript" src="lib/vue.js"></script>
+		<script type="text/javascript" src="lib/elementui/index.js"></script>
+
+		<script type="text/javascript">
+			new Vue({
+				el: "#app",
+				data: {
+					activeIndex: "1",
+					aboutMeUrl: "aboutme.html",
+					iframeUrl: "aboutme.html",
+
+					menus: [
+						{
+							name: "可视化系统",
+							id: "statShow",
+							iconClass: "el-icon-menu",
+							children: [{
+									// name: "可视化展示",
+									id: "dataShow",
+									children: [{
+										name: "谣言与新闻时间尺度",
+										id: "tAnalyst",
+										url: "tAnalyst/tAnalyst.html"
+									},{
+										name: "谣言与新闻空间尺度",
+										id: "sAnalyst",
+										url: "sAnalyst/sAnalyst.html"
+									},{
+										name: "特定主题分析",
+										id: "eAnalyst",
+										url: "eAnalyst/eAnalyst.html"
+									}]
+								}
+
+							]
+
+						}
+					]
+				},
+				methods: {
+					open(url) {
+						this.iframeUrl = url;
+					},
+					openGitHub() {
+						window.open("https://github.com/yuleGH", "_blank");
+					}
+				}
+			});
+		</script>
+
+	</body>
+
+</html>
