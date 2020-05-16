@@ -13,7 +13,7 @@
     <div id="app">
 		<el-row :gutter="16">
 				<el-col :span="24">
-					<div class="grid-content-header grid-content1 bg-purple" id="fTotal"></div>
+					<div class="grid-content-header grid-content1 bg-purple" id="heatMap"></div>
 				</el-col>
 		</el-row>
 		<el-row :gutter="16">
@@ -62,15 +62,13 @@
     <script type="text/javascript" src="../lib/elementui/index.js"></script>
     <script type="text/javascript" src="../lib/jquery.js"></script>
     <script type="text/javascript" src="../lib/echarts.min.js"></script>
+	<script type="text/javascript" src="../lib/d3.v4.min.js"></script>
     <script type="text/javascript" src="../lib/d3.min.js"></script>
-    <script type="text/javascript" src="../js/tendencyChart.js"></script>
-    <script type="text/javascript" src="../js/themeBubble.js"></script>
+    <!-- <script type="text/javascript" src="../js_draw/sAnalyst/areaWord.js"></script> -->
+    <script type="text/javascript" src="../js_draw/sAnalyst/heatMap.js"></script>
     <script type="text/javascript">
         new Vue({
-            el: "#app",
-            mounted() {
-                drawTendency();
-            }
+            el: "#app"
         });
     </script>
 </body>

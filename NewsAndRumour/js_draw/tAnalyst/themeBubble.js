@@ -14,7 +14,7 @@ $(document).ready(function () {
         .attr("width", width)
         .attr("height", height);
 
-    d3.json("js/newsAndrumor/data/themeBubble.json", function (error, root) {
+    d3.json("data/themeBubble.json", function (error, root) {
         // 定义布局方式
         let pack = d3.pack()
             .size([width, height])
