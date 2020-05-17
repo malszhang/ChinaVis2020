@@ -16,7 +16,7 @@ $(document).ready(function () {
         .append("g")
         .attr("transform", "translate(" + heat_padding.left + "," + heat_padding.top + ")")
         .attr("id", "heat_svg");
-    d3.json("js/newsOfarea/data/heatmap.json", function (error, treeData) {
+    d3.json("data/heatmap.json", function (error, treeData) {
         drawHeatMap_tree(treeData, width, height);
     });
 });
@@ -115,7 +115,6 @@ function update(source) {
                 x: source._x,
                 y: source._y
             };
-            console.log(o);
             return diagonal(o, o);
         });
 
