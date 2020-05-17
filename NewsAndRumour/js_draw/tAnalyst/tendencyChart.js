@@ -119,7 +119,10 @@ function drawTendency(){
     function randomDatas() {
         var newData = [];
         for(var i = 0 ; i < data.values.length ; i++){
-            newData.push(Math.round(Math.random() *100 + 2300));
+            newData.push([
+				i,
+				Math.round(Math.random() *100 + 2300)
+			]);
         }
         return newData;
     }
@@ -241,13 +244,13 @@ function drawTendency(){
             },
             {
                 name:'demo',
-                type: 'graph',
+                type: 'scatter',
                 layout: 'none',
                 coordinateSystem: 'cartesian2d',
-                symbolSize: 40,
-                label: {
-                    show: true
-                },
+                symbolSize: 8,
+                // label: {
+                //     show: true
+                // },
                 edgeSymbol: ['circle', 'arrow'],
                 edgeSymbolSize: [4, 10],
                 data: datas,
