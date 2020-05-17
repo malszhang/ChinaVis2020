@@ -1,0 +1,73 @@
+{
+    "type": "force",
+    "categories": [
+        {
+            "name": "网格关系", 
+            "keyword": {},
+            "base": "网格关系"
+        }
+    ],
+    "nodes": [ 
+        {
+            "name": "父节点", 
+            "value": 3,
+            "category": 0 
+        },
+        {
+            "name": "二级父节点1",
+            "value": 8,
+            "category": 0
+        },
+        {
+            "name": "二级父节点2",
+            "value": 10,
+            "category": 0
+        },
+        {
+            "name": "子节点1",
+            "value": 10,
+            "category": 0
+        },
+        {
+            "name": "子节点2",
+            "value": 110,
+            "category": 0
+        },
+        {
+            "name": "子节点3",
+            "value": 100,
+            "category": 0
+        },
+        {
+            "name": "子节点4",
+            "value": 1000,
+            "category": 0
+        }
+    ],
+    "links": [ 
+        {
+            "source": 0, 
+            "target": 1 
+        },
+        {
+            "source": 0,
+            "target": 2
+        },
+        {
+            "source": 1,
+            "target": 3
+        },
+        {
+            "source": 1,
+            "target": 4
+        },
+        {
+            "source": 2,
+            "target": 5
+        },
+        {
+            "source": 2,
+            "target": 6
+        }
+    ]
+}
