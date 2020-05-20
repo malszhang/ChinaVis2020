@@ -1,13 +1,14 @@
 function splitDiv(divNum) {
-    let html ='';
+    let html = '';
     let rowNum = Math.sqrt(divNum);
+    console.log(rowNum);
     var height = document.getElementById("nodeMatrix").offsetHeight;
     let cellHeight = (height - 48) / rowNum;
-    for(let i = 0; i< rowNum;++i){
+    for (let i = 0; i < rowNum; ++i) {
         let row = '<el-row :gutter="16">';
-        for(let j = 0; j< rowNum;++j){
-            row += '<el-col :span="'+ 24 / rowNum +'">';
-            row += '<div class="grid-content-header grid-content3 bg-purple" style="height:'+ cellHeight +'" id="'+ i + '-'+ j + '"></div>';
+        for (let j = 0; j < rowNum; ++j) {
+            row += '<el-col :span="' + 24 / rowNum + '">';
+            row += '<div class="grid-content-header grid-content3 bg-purple" style="height:' + cellHeight + '" id="' + i + '-' + j + '"></div>';
             row += '</el-col>';
         }
         row += '</el-row>';
@@ -20,10 +21,10 @@ function splitDiv(divNum) {
 }
 
 function drawNodeMatrix() {
-    let dom = document.getElementById('0-1');
+    let dom = document.getElementById('0-0');
     let myChart = echarts.init(dom);
-    $.getJSON("../tAnalyst/data/nodeData.json",function(data){
-        drawNode(data,myChart);
+    $.getJSON("../tAnalyst/data/nodeData.json", function (data) {
+        drawNode(data, myChart);
     });
 
 }
