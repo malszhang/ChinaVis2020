@@ -1,0 +1,57 @@
+[
+  {
+    "value": 1904,
+    "name": "AddressBook Plug-Ins",
+    "path": "AddressBook Plug-Ins",
+    "children": [
+      {
+        "value": 744,
+        "name": "CardDAVPlugin.sourcebundle",
+        "path": "AddressBook Plug-Ins/CardDAVPlugin.sourcebundle",
+        "children": [
+          {
+            "value": 744,
+            "name": "Contents",
+            "path": "AddressBook Plug-Ins/CardDAVPlugin.sourcebundle/Contents"
+          }
+        ]
+      },
+      {
+        "value": 280,
+        "name": "DirectoryServices.sourcebundle",
+        "path": "AddressBook Plug-Ins/DirectoryServices.sourcebundle",
+        "children": [
+          {
+            "value": 280,
+            "name": "Contents",
+            "path": "AddressBook Plug-Ins/DirectoryServices.sourcebundle/Contents"
+          }
+        ]
+      },
+      {
+        "value": 680,
+        "name": "Exchange.sourcebundle",
+        "path": "AddressBook Plug-Ins/Exchange.sourcebundle",
+        "children": [
+          {
+            "value": 680,
+            "name": "Contents",
+            "path": "AddressBook Plug-Ins/Exchange.sourcebundle/Contents"
+          }
+        ]
+      },
+      {
+        "value": 432,
+        "name": "LDAP.sourcebundle",
+        "path": "AddressBook Plug-Ins/LDAP.sourcebundle",
+        "children": [
+          {
+            "value": 432,
+            "name": "Contents",
+            "path": "AddressBook Plug-Ins/LDAP.sourcebundle/Contents"
+          }
+        ]
+      }
+    ]
+  }
+]

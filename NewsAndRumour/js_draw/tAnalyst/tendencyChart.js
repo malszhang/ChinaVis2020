@@ -154,7 +154,7 @@ function drawTendency() {
 					label: {
 						show: false
 					}
-				}, 
+				},
 				{
 					name: "Rumour",
 					type: 'scatter',
