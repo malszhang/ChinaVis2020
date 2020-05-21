@@ -18,13 +18,13 @@
 		</el-row>
 		<el-row :gutter="16">
 			<el-col :span="8">
-				<div class="grid-content-header grid-content2 bg-purple" id="doorComponent"></div>
+				<div class="grid-content-header grid-content2 bg-purple" id="areaWord"></div>
 			</el-col>
 			<el-col :span="8">
-				<div class="grid-content-header grid-content2 bg-purple" id="floorComponent"></div>
+				<div class="grid-content-header grid-content2 bg-purple" id="lineBar"></div>
 			</el-col>
 			<el-col :span="8">
-				<div class="grid-content-header grid-content2 bg-purple" id="floorComponent"></div>
+				<div class="grid-content-header grid-content2 bg-purple" id="treeMap"></div>
 			</el-col>
 		</el-row>
     </div>
@@ -63,12 +63,19 @@
     <script type="text/javascript" src="../lib/jquery.js"></script>
     <script type="text/javascript" src="../lib/echarts.min.js"></script>
 	<script type="text/javascript" src="../lib/d3.v4.min.js"></script>
-    <script type="text/javascript" src="../lib/d3.min.js"></script>
-    <!-- <script type="text/javascript" src="../js_draw/sAnalyst/areaWord.js"></script> -->
+	<script type="text/javascript" src="../lib/echarts-wordcloud.min.js"></script>
+	<script type="text/javascript" src="../js_draw/sAnalyst/areaWord.js"></script>
     <script type="text/javascript" src="../js_draw/sAnalyst/heatMap.js"></script>
+	<script type="text/javascript" src="../js_draw/sAnalyst/lineBar.js"></script>
+	<script type="text/javascript" src="../js_draw/sAnalyst/treeMap.js"></script>
     <script type="text/javascript">
         new Vue({
-            el: "#app"
+            el: "#app",
+			mounted(){
+                drawLineBar();
+                drawTreeMap();
+                drawAreaWord();
+			}
         });
     </script>
 </body>
