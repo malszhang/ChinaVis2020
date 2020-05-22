@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%;"></div>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl/dist/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat/dist/ecStat.min.js"></script>
+       <script type="text/javascript" src="jquery.js"></script>
+	   <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+myChart.showLoading();
+$.get('yaoyanAnews_similarity_06.json', function (xml) {
+    myChart.hideLoading();
+	var nodeAll = []
+	xml.links.forEach(function(link){
+		if (link.value > 0.67){
+			nodeAll.push(link.source);
+			nodeAll.push(link.target);
+		}
+		
+	})
+	var tNode = []
+    xml.nodes.forEach(function (node) {
+        node.itemStyle = null;
+        node.symbolSize = 10;
+        // node.value = node.symbolSize;
+        // Use random x, y
+        node.x = node.y = null;
+		if (node.name[0] == 'n'){
+			node.category = "news";
+		}else{
+			node.category = "rumous";
+		}
+        node.draggable = true;
+		if (nodeAll.indexOf(node.name) != -1){
+			tNode.push(node)
+		}
+		
+    });
+    option = {
+        title: {
+            text: 'Les Miserables',
+            subtext: 'Default layout',
+            top: 'bottom',
+            left: 'right'
+        },
+        tooltip: {
+			formatter: function(obj) {
+				// console.log(obj)
+				return obj.data.text
+			}
+		},
+        animation: false,
+		legend: [{
+			data:["rumous", "news"]
+		}],
+        series : [
+            {
+                name: 'Les Miserables',
+                type: 'graph',
+                layout: 'force',
+                data: tNode,
+                links: xml.links,
+				categories: [{name:"news"}, {name:"rumous"}],
+                roam: true,
+                label: {
+                    position: 'right'
+                },
+                force: {
+                    repulsion: 50
+                },
+				focusNodeAdjacency: true,
+            }
+        ]
+    };
+
+    myChart.setOption(option);
+});;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>

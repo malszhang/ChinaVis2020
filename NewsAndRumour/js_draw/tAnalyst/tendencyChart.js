@@ -95,13 +95,14 @@ function drawTendency() {
 				splitLine: {
 					show: false
 				},
-				splitNumber: 20
+				
 			},
 			yAxis: [{
 				scale: true,
 				splitArea: {
 					show: true
-				}
+				},
+				splitNumber: 4
 			}, {
 				scale: true,
 				splitArea: {
@@ -126,7 +127,9 @@ function drawTendency() {
 					type: 'line',
 					yAxisIndex: 0,
 					data: calculateMA(0, data),
+					showSymbol: false,
 					smooth: true,
+					z:999
 					// lineStyle: {
 					// 	opacity: 0.3
 					// }
@@ -135,8 +138,10 @@ function drawTendency() {
 					name: '新增治愈',
 					type: 'line',
 					yAxisIndex: 0,
+					showSymbol: false,
 					data: calculateMA(1, data),
 					smooth: true,
+					z:999
 					// lineStyle: {
 					// 	opacity: 0.3
 					// }
@@ -145,8 +150,10 @@ function drawTendency() {
 					name: '新增死亡',
 					type: 'line',
 					yAxisIndex: 0,
+					showSymbol: false,
 					data: calculateMA(2, data),
 					smooth: true,
+					z:999
 					// lineStyle: {
 					// 	opacity: 0.3
 					// }
@@ -198,12 +205,30 @@ function drawTendency() {
 			})
 			option.legend[1].data.push(rawData[2][i].name);
 		}
-		console.log(rawData[1].length)
 		if (option && typeof option === "object") {
 			myChart.setOption(option, true);
 		}
 		window.addEventListener('resize', function() {
 			myChart.resize();
 		})
+		myChart.on('datazoom', function(params) {
+				startValue = myChart.getOption().dataZoom[0].startValue;
+				endValue = myChart.getOption().dataZoom[0].endValue;
+				var timeData = []
+				for (var i = startValue; i <= endValue; i++){
+					timeData.push(data.categoryData[i]);
+				}
+				var runumounsData = []
+				for (var i = 0; i < rawData[2].length; i++){
+					for (var j = 0; j < rawData[2][i].data.length; j++){
+						var r = rawData[2][i].data[j];
+						if (timeData.indexOf(r.time) != -1){
+							runumounsData.push(r);
+						}
+					}
+					
+				}
+				console.log(runumounsData)
+		});
 	})
 }
