@@ -13,11 +13,13 @@ $(document).ready(function () {
     let height = document.getElementById("heatMap").offsetHeight - heat_padding.top - heat_padding.bottom;
     let svg = d3.select("#heatMap")
         .append("svg")
-        .attr("height", height)
-        .attr("width", width)
+        .attr("height", height + heat_padding.top + heat_padding.bottom)
+        .attr("width", width + heat_padding.left + heat_padding.right)
+        .attr('class', 'heat_svg')
+        .attr('id', 'heat_svg')
         .append("g")
         .attr("transform", "translate(" + heat_padding.left + "," + heat_padding.top + ")")
-        .attr("id", "heat_svg");
+        .attr("id", "tree_g");
     d3.json("data/province.json", function (error, treeData) {
         drawHeatMap_tree(treeData, width, height);
     });
@@ -33,11 +35,11 @@ function drawHeatMap_tree(treeData, width, height) {
     rootData = tree(root);
     root._x = height / 2;
     root._y = heat_padding.left;
-    update(root);
+    update_tree(root);
 }
 // 绘制、更新树图
-function update(source) {
-    let svg = d3.select("#heat_svg");
+function update_tree(source) {
+    let svg = d3.select("#tree_g");
 
     let nodes = rootData.descendants(),
         links = rootData.descendants().slice(1);
@@ -159,8 +161,11 @@ function update(source) {
     nodes.forEach(function (d) {
         d._x = d.x;
         d._y = d.y;
-    })
-    drawHeatMap_heat('1');
+    });
+    let heat_g = document.getElementById('heat_g');
+    if (!heat_g) {
+        drawHeatMap_heat('1');
+    }
 }
 // 树图连线
 function diagonal(s, d) {
@@ -173,44 +178,130 @@ function diagonal(s, d) {
 }
 // 树图点击进行收放
 function click(d) {
+    let flag; //false 合并 true 分开
+    let heatData = [];
     if (d.children) {
+        flag = false;
+        copyData(d.children, heatData)
         d._children = d.children;
         d.children = null;
     } else {
+        flag = true;
         d.children = d._children;
         d._children = null;
+        copyData(d.children, heatData)
     }
-    update(d);
+    update_tree(d);
+    update_heat(heatData, flag);
 }
 
-var testHeatDate = []
-function getTestData(){
-    $.getJson('data/province.json',function(data){
+var testHeatDate = [];
+getTestData();
+async function getTestData() {
+    await $.getJSON('data/province.json', function (data) {
         let province = data.children;
-        for(let area in province){
-            
+        for (let i = 0; i < province.length; ++i) {
+            for (let j = 0; j < province[i].children.length; ++j) {
+                let dateData = [];
+                for (let index = 1; index <= 30; ++index) {
+                    dateData.push({
+                        date: '2020/1/' + index,
+                        num: parseInt(Math.random() * 20)
+                    })
+                }
+                testHeatDate.push({
+                    province: province[i].children[j].name,
+                    date: dateData
+                });
+            }
         }
-    })
+    });
 }
 
 function drawHeatMap_heat(data) {
-    let marginLeft = document.getElementById('heat_svg').getBoundingClientRect().top + heat_padding.left;
+    let marginLeft = document.getElementById('tree_g').getBoundingClientRect().top + heat_padding.left * 1;
+    let heat_g = d3.select(".heat_svg")
+        .append('g')
+        .attr("transform", "translate(" + marginLeft + "," + heat_padding.top + ")")
+        .attr("id", "heat_g");
 
-    let svg = d3.select("#heat_svg");
-    
     let yScale = d3.scaleOrdinal()
         .domain(yDomain)
         .range(yRange);
 
-    // let xScale = d3.scaleOrdinal()
-    // .domain()
-    // .range();
+    let heatWidth = d3.select('#heat_svg').attr('width') - marginLeft;
 
-    let rect = svg.append('rect')
-        .attr('x', marginLeft)
-        .attr('y', yScale('山西'))
-        .attr('width', 20)
-        .attr('height', 10)
-        .style('stroke', 'black');
+    let xDomain = getXDomain(testHeatDate);
+    let xScale = d3.scaleBand()
+        .domain(xDomain)
+        .range([0, heatWidth]);
 
+    for (let i = 0; i < testHeatDate.length; ++i) {
+        let rect = heat_g.selectAll('.'+ testHeatDate[i].province)
+            .data(testHeatDate[i].date)
+            .enter()
+            .append('rect')
+            .attr('class',testHeatDate[i].province)
+            .attr('x', function (d) {
+                return heat_padding.left * 1.5 + xScale(d.date);
+            })
+            .attr('y', function (d) {
+                return yScale(testHeatDate[i].province) - 3.5;
+            })
+            .attr('width', 7)
+            .attr('height', 7)
+            .style('stroke', 'black')
+            .style('fill', 'blue');
+    }
 }
+
+function update_heat(data, flag) {
+    let heat_g = d3.select("#heat_g");
+
+
+    console.log(data);
+}
+
+function getXDomain(data) {
+    let xDomain = [];
+    date = data[0].date;
+    for (let i = 0; i < date.length; ++i) {
+        xDomain.push(date[i].date);
+    }
+    return xDomain;
+}
+
+function copyData(oldData, newData) {
+    for (let i = 0; i < oldData.length; ++i) {
+        newData.push({
+            name: oldData[i].data.name,
+            parent: oldData[i].data.parent
+        });
+    }
+}
+
+[{
+        "province": '北京',
+        'date': [{
+                'date': '2019/12/1',
+                'num': 0
+            },
+            {
+                'date': '2019/12/2',
+                'num': 0
+            }
+        ]
+    },
+    {
+        "province": '山西',
+        'date': [{
+                'date': '2019/12/1',
+                'num': 0
+            },
+            {
+                'date': '2019/12/2',
+                'num': 0
+            }
+        ]
+    }
+]
