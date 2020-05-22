@@ -183,6 +183,16 @@ function click(d) {
     update(d);
 }
 
+var testHeatDate = []
+function getTestData(){
+    $.getJson('data/province.json',function(data){
+        let province = data.children;
+        for(let area in province){
+            
+        }
+    })
+}
+
 function drawHeatMap_heat(data) {
     let marginLeft = document.getElementById('heat_svg').getBoundingClientRect().top + heat_padding.left;
 
@@ -195,6 +205,7 @@ function drawHeatMap_heat(data) {
     // let xScale = d3.scaleOrdinal()
     // .domain()
     // .range();
+
     let rect = svg.append('rect')
         .attr('x', marginLeft)
         .attr('y', yScale('山西'))

@@ -2,24 +2,44 @@
     "type": "force",
     "categories": [
         {
-            "name": "网格关系", 
+            "name": "行业战疫", 
             "keyword": {},
-            "base": "网格关系"
+            "base": "行业战疫"
         },
         {
-            "name": "关系1", 
+            "name": "境内疫情", 
             "keyword": {},
-            "base": "关系1"
+            "base": "境内疫情"
         },
         {
-            "name": "关系2", 
+            "name": "境外疫情", 
             "keyword": {},
-            "base": "关系2"
+            "base": "境外疫情"
         },
         {
-            "name": "关系3", 
+            "name": "政府行动", 
             "keyword": {},
-            "base": "关系3"
+            "base": "政府行动"
+        },
+        {
+            "name": "辟谣", 
+            "keyword": {},
+            "base": "辟谣"
+        },
+        {
+            "name": "事实", 
+            "keyword": {},
+            "base": "事实"
+        },
+        {
+            "name": "误区", 
+            "keyword": {},
+            "base": "误区"
+        },
+        {
+            "name": "谣言", 
+            "keyword": {},
+            "base": "谣言"
         }
     ],
     "nodes": [ 
@@ -36,27 +56,32 @@
         {
             "name": "二级父节点2",
             "symbolSize": 10,
-            "category": 3
+            "category": 2
         },
         {
             "name": "子节点1",
             "symbolSize": 10,
-            "category": 2
+            "category": 3
         },
         {
             "name": "子节点2",
             "symbolSize": 15,
-            "category": 1
+            "category": 4
         },
         {
             "name": "子节点3",
             "symbolSize": 9,
-            "category": 0
+            "category": 5
         },
         {
             "name": "子节点4",
             "symbolSize": 11,
-            "category": 2
+            "category": 6
+        },
+        {
+            "name": "子节点5",
+            "symbolSize": 11,
+            "category": 7
         }
     ],
     "links": [ 
@@ -83,6 +108,10 @@
         {
             "source": 2,
             "target": 6
+        },
+        {
+            "source": 4,
+            "target": 7
         }
     ]
 }

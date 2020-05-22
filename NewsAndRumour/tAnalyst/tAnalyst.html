@@ -78,7 +78,7 @@
 			el: "#app",
 			mounted() {
 				drawTendency();
-				let divNum = 7 * Math.random() + 3;
+				let divNum = 1;//7 * Math.random() + 3;
 				$.getJSON("../tAnalyst/data/nodeData.json", function (data) {
 					drawNodeMatrix(divNum, data);
 				});
