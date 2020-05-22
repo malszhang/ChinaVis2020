@@ -64,18 +64,18 @@ function drawThemeBubble(nodes, width, height) {
         });
 
     bubbles.append("text")
-    .attr("dy", ".2em")
-    .style("text-anchor", "middle")
-    .attr("x", function (d) {
-        return width / 2;
-    })
-    .attr("y", function (d) {
-        return height / 2;
-    })
-    .text(function (d) {
-        return d.data.name.substring(0, d.r / 3);
-    })
-    .attr("font-size", 0);
+        .attr("dy", ".2em")
+        .style("text-anchor", "middle")
+        .attr("x", function (d) {
+            return width / 2;
+        })
+        .attr("y", function (d) {
+            return height / 2;
+        })
+        .text(function (d) {
+            return d.data.name.substring(0, d.r / 3);
+        })
+        .attr("font-size", 0);
 
     bubbles.selectAll("circle")
         .transition()
@@ -102,9 +102,13 @@ function drawThemeBubble(nodes, width, height) {
         .attr("font-size", function (d) {
             return d.r / 2.5;
         });
-        
+
 }
 
 function bubble_click(d) {
     console.log(d.data);
+    // let divNum = 7 * Math.random() + 3;
+    // $.getJSON("../tAnalyst/data/nodeData.json", function (data) {
+    //     drawNodeMatrix(divNum, data);
+    // });
 }

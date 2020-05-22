@@ -25,6 +25,7 @@ function splitDiv(divNum) {
 }
 
 function drawNodeMatrix(dataNum, data) {
+    splitDiv(dataNum);
     for(let i = 0;i<dataNum;++i){
         let dom = document.getElementById('node-' + i);
         let myChart = echarts.init(dom);
@@ -61,6 +62,5 @@ function drawNode(webkitDep, myChart) {
             edges: webkitDep.links
         }]
     };
-
     myChart.setOption(option);
 }
