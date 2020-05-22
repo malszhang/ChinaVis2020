@@ -17,6 +17,7 @@
 			</el-col>
 		</el-row>
 		<el-row :gutter="16">
+
 			<el-col :span="8">
 				<div class="grid-content-header grid-content2 bg-purple" style="overflow-y:auto" id="nodeMatrix"></div>
 			</el-col>
@@ -77,9 +78,9 @@
 			el: "#app",
 			mounted() {
 				drawTendency();
-				splitDiv(5);
+				let divNum = 7 * Math.random() + 3;
 				$.getJSON("../tAnalyst/data/nodeData.json", function (data) {
-					drawNodeMatrix(5,data);
+					drawNodeMatrix(divNum, data);
 				});
 			}
 		});
