@@ -29,9 +29,9 @@ function splitDiv(divNum) {
 }
 
 function drawNodeMatrix(dataNum, data) {
-    splitDiv(dataNum);
+    // splitDiv(dataNum);
     for(let i = 0;i<dataNum;++i){
-        let dom = document.getElementById('node-' + i);
+        let dom = document.getElementById("nodeMatrix");
         let myChart = echarts.init(dom);
         drawNode(data, myChart);
     }
@@ -39,54 +39,44 @@ function drawNodeMatrix(dataNum, data) {
 
 function drawNode(webkitDep, myChart) {
     var nColors = ['#74add1', '#313695', '#4575b4', '#abd9e9','#fee090','#d73027', '#fdae61', '#f46d43'];
-    let option = {
-        // legend: {
-        //     left: 5,
-        //     show: false,
-        //     data: ['网格关系',"关系1", "关系2", "关系3",] //此处的数据必须和关系网类别中name相对应  
-        // },
-        series: [{
-            type: 'graph',
-            layout: 'force',
-            animation: false,
-            roam: true,
-            focusNodeAdjacency: true,
-            itemStyle: {
-                color: function(d){
-                    return nColors[d.data.category];
-                },
-                borderColor: '#fff',
-                borderWidth: 1,
-                shadowBlur: 4,
-                shadowColor: 'rgba(0, 0, 0, 0.3)'
-            },
-            lineStyle: {
-                color: 'source',
-                curveness: 0.3
-            },
-            emphasis: {
-                lineStyle: {
-                    width: 8
-                }
-            },
-            label: {
-                normal: {
-                    show: false,
+    option = {
+		color:webkitDep.color,
+        title: {
+            text: 'Les Miserables',
+            subtext: 'Default layout',
+            top: 'bottom',
+            left: 'right'
+        },
+        tooltip: {
+    		formatter: function(obj) {
+    			// console.log(obj)
+    			return obj.data.text
+    		}
+    	},
+		legend:[
+			{
+				data: webkitDep.categories
+			}
+		],
+        animation: false,
+        series : [
+            {
+                name: 'Les Miserables',
+                type: 'graph',
+                layout: 'force',
+                data: webkitDep.nodes,
+                links: webkitDep.links,
+    			categories: webkitDep.categories_name,
+                roam: true,
+                label: {
                     position: 'right'
-                }
-            },
-            draggable: true,
-            data: webkitDep.nodes.map(function (node, idx) {
-                node.id = idx;
-                return node;
-            }),
-            categories: webkitDep.categories,
-            force: {
-                edgeLength: 25, //连线的长度  
-                repulsion: 20 //子节点之间的间距  
-            },
-            edges: webkitDep.links
-        }]
+                },
+                force: {
+                    repulsion: 50
+                },
+    			focusNodeAdjacency: true,
+            }
+        ]
     };
     myChart.setOption(option);
 }

@@ -46,6 +46,7 @@ function drawTendency() {
 	var nColors = ['#74add1', '#313695', '#4575b4', '#abd9e9']
 	// var rColors = ["#E9B9A7", "#E99E9A", "#A9272C", "#DCB1B8"];
 	var rColors = ['#fee090','#d73027', '#fdae61', '#f46d43'];
+	var colors = new Map();
 	$.getJSON("data/news.json", function(rawData) {
 		var data = splitData(rawData[0]);
 		var option = {
@@ -189,6 +190,7 @@ function drawTendency() {
 				},
 				color: nColors[i]
 			})
+			colors.set(rawData[1][i].name, nColors[i]);
 			option.legend[1].data.push(rawData[1][i].name);
 		}
 		for (var i = 0; i < rawData[2].length; i++){
@@ -203,6 +205,7 @@ function drawTendency() {
 				},
 				color: rColors[i]
 			})
+			colors.set(rawData[2][i].name, rColors[i]);
 			option.legend[1].data.push(rawData[2][i].name);
 		}
 		if (option && typeof option === "object") {
@@ -223,12 +226,50 @@ function drawTendency() {
 					for (var j = 0; j < rawData[2][i].data.length; j++){
 						var r = rawData[2][i].data[j];
 						if (timeData.indexOf(r.time) != -1){
-							runumounsData.push(r);
+							runumounsData.push(r.name);
 						}
 					}
-					
 				}
-				console.log(runumounsData)
+				$.get('data/similarity.json', function (d) {
+					// var newsData = [];
+					var nodeName = [];
+					d.links.forEach(function(link){
+						if (runumounsData.indexOf(link.source) != -1 &&
+						runumounsData.indexOf(link.target) == -1){
+							runumounsData.push(link.target);
+							nodeName.push(link.target)
+						}
+						nodeName.push(link.source)
+					});
+					var nodes = [];
+					var categories = [];
+					var categories_name = [];
+					var reColor = []
+					d.nodes.forEach(function(node){
+						if (runumounsData.indexOf(node.name) != -1
+						&& nodeName.indexOf(node.name) != -1){
+							node.symbolSize = 10
+							nodes.push(node);
+							if (categories.indexOf(node.category) == -1){
+								categories.push(node.category);
+								categories_name.push({
+									name: node.category
+								})
+								reColor.push(colors.get(node.category))
+							}
+						}
+					});
+					var rData = {
+						categories: categories,
+						categories_name: categories_name,
+						links: d.links,
+						nodes: nodes,
+						color: reColor
+					}
+					console.log(rData)
+					drawNodeMatrix(1, rData);
+				});
+				
 		});
 	})
 }

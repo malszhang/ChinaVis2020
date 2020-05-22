@@ -56,7 +56,7 @@
 
 		.grid-content2 {
 			border-radius: 4px;
-			min-height: 38%;
+			min-height: 45%;
 		}
 
 		.row-bg {
@@ -78,10 +78,6 @@
 			el: "#app",
 			mounted() {
 				drawTendency();
-				let divNum = 1;//7 * Math.random() + 3;
-				$.getJSON("../tAnalyst/data/nodeData.json", function (data) {
-					drawNodeMatrix(divNum, data);
-				});
 			}
 		});
 	</script>

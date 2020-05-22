@@ -1,4 +1,46 @@
-{
+{ "type": "force",
+    "categories": [
+        {
+            "name": "行业战疫", 
+            "keyword": {},
+            "base": "行业战疫"
+        },
+        {
+            "name": "境内疫情", 
+            "keyword": {},
+            "base": "境内疫情"
+        },
+        {
+            "name": "境外疫情", 
+            "keyword": {},
+            "base": "境外疫情"
+        },
+        {
+            "name": "政府行动", 
+            "keyword": {},
+            "base": "政府行动"
+        },
+        {
+            "name": "辟谣", 
+            "keyword": {},
+            "base": "辟谣"
+        },
+        {
+            "name": "事实", 
+            "keyword": {},
+            "base": "事实"
+        },
+        {
+            "name": "误区", 
+            "keyword": {},
+            "base": "误区"
+        },
+        {
+            "name": "谣言", 
+            "keyword": {},
+            "base": "谣言"
+        }
+    ],
   "nodes": [
     {
       "name": "r_1",
