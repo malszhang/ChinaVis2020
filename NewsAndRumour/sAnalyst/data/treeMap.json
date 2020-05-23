@@ -1,20 +1,7 @@
 [
-  {
-    "value": 1904,
-    "name": "AddressBook Plug-Ins",
-    "path": "AddressBook Plug-Ins",
-    "children": [
       {
         "value": 744,
-        "name": "CardDAVPlugin.sourcebundle",
-        "path": "AddressBook Plug-Ins/CardDAVPlugin.sourcebundle",
-        "children": [
-          {
-            "value": 744,
-            "name": "Contents",
-            "path": "AddressBook Plug-Ins/CardDAVPlugin.sourcebundle/Contents"
-          }
-        ]
+        "name": "CardDAVPlugin.sourcebundle"
       },
       {
         "value": 280,
@@ -52,6 +39,4 @@
           }
         ]
       }
-    ]
-  }
 ]

@@ -38,18 +38,38 @@ function drawTreeMap() {
     }
 
     treeMapChart.showLoading();
-    $.get('data/treeMap.json', function (diskData) {
+    $.get('data/textcategory.json', function (data) {
         treeMapChart.hideLoading();
         var formatUtil = echarts.format;
+        let province = data[22].province;
+        let time = data[22].date[85].date;
+        let list = [];
+        list.push({
+            name: '境内疫情',
+            value: Number(data[22].date[85]['境内疫情'].value)
+        });
+        list.push({
+            name: '境外疫情',
+            value: Number(data[22].date[85]['境外疫情'].value)
+        });
+        list.push({
+            name: '政府行动',
+            value: Number(data[22].date[85]['政府行动'].value)
+        });
+        list.push({
+            name: '行业战疫',
+            value: Number(data[22].date[85]['行业战疫'].value)
+        });
 
         treeMapChart.setOption(
             treeOption = {
             title: {
-                text: 'Disk Usage',
+                text: province,
                 left: 'center'
             },
             tooltip: {
                 formatter: function (info) {
+                    console.log(info);
                     var value = info.value;
                     var treePathInfo = info.treePathInfo;
                     var treePath = [];
@@ -59,15 +79,15 @@ function drawTreeMap() {
                     }
 
                     return [
-                        '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('/')) + '</div>',
-                        'Disk Usage: ' + formatUtil.addCommas(value) + ' KB',
+                        // '<div class="tooltip-title">' + formatUtil.encodeHTML(treePath.join('/')) + '</div>',
+                        '个数: ' + formatUtil.addCommas(value),
                     ].join('');
                 }
             },
 
             series: [
                 {
-                    name: 'Disk Usage',
+                    name: province,
                     type: 'treemap',
                     visibleMin: 300,
                     label: {
@@ -82,7 +102,7 @@ function drawTreeMap() {
                         borderColor: '#fff'
                     },
                     levels: getLevelOption(),
-                    data: diskData
+                    data: list
                 }
             ]
         });
