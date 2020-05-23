@@ -5,33 +5,26 @@ var theme_padding = {
     right: 5
 };
 
-$(document).ready(function () {
-    let width = document.getElementById("themeBubble").offsetWidth - theme_padding.left - theme_padding.right;
+function drawThemeBubble(root) {
+	let width = document.getElementById("themeBubble").offsetWidth - theme_padding.left - theme_padding.right;
     let height = document.getElementById("themeBubble").offsetHeight - theme_padding.top - theme_padding.bottom;
-    let svg3 = d3.select("#themeBubble")
-        .append("svg")
-        .attr("id", "theme_svg")
-        .attr("width", width)
-        .attr("height", height)
+    d3.select('#theme_svg').remove();
+	let svg3 = d3.select("#themeBubble")
+	    .append("svg")
+	    .attr("id", "theme_svg")
+	    .attr("width", width)
+	    .attr("height", height)
         .attr("transform", "translate(" + theme_padding.left + "," + theme_padding.top + ")");
-
-    d3.json("data/themeBubble.json", function (error, root) {
-        // 定义布局方式
-        let pack = d3.pack()
-            .size([width, height])
-            .padding(5);
-
-        let data = d3.hierarchy(root)
-            .sum(function (d) {
-                return d.weight;
-            });
-
-        let nodes = pack(data).descendants();
-        drawThemeBubble(nodes, width, height);
-    })
-});
-
-function drawThemeBubble(nodes, width, height) {
+        
+	let pack = d3.pack()
+	        .size([width, height])
+	        .padding(5);
+	let data = d3.hierarchy(root)
+	    .sum(function (d) {
+	        return d.weight;
+	    });
+	
+	let nodes = pack(data).descendants();
     let color = d3.scaleOrdinal(d3.schemeCategory20);
 
     let bubbles = d3.select("#theme_svg").selectAll(".bubble")

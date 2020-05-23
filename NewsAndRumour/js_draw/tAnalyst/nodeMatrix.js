@@ -1,3 +1,94 @@
+var clickNodes = [];
+var useLinks = [];
+var i = 0;
+function strongWord(i){
+    return "<strong>"+i+"、"+"</strong>";
+}
+function markStr(str, wordL) {
+    str = "  " + str;
+    for (var i = 0; i < wordL.length; i++) {
+        var showIndex = str.indexOf(wordL[i]);
+        if (showIndex > -1) {
+            var str1 = str.substring(0, showIndex) + "<mark style=\'background-color: #ff993e\'><strong>";
+            var str2 = "</strong></mark>" + str.substring(showIndex + wordL[i].length, str.length);
+            str = str1 + wordL[i] + str2;
+        }
+    }
+    return str;
+}
+function creatKnTable(data, wordL) {
+    $("#knTopic").html("共有谣言与新闻("+data.length+")条");
+    var htmls = "";
+    for (var i = 0; i < data.length; i++) {
+        htmls += "<tr class=\"active\"><td>" + strongWord(i+1)+markStr(data[i].text, wordL) + "</td></tr>";
+    }
+    $("#knTbody")
+        .html(htmls);
+    $("#kn").show();
+}
+function countNum(word, wordL){
+	var count = 0;
+	wordL.forEach(function(w){
+		if (word == w){
+			count++;
+		}
+	})
+	return count;
+}
+function findComWords(nodes){
+	var keyWord = [];
+	var rData = [];
+	var wordL = []
+	nodes.forEach(function(node){
+		node.keyword.forEach(function(word){
+			if (keyWord.indexOf(word) == -1){
+				rData.push(word);
+			}
+			keyWord.push(word);
+		})
+	})
+	rData.forEach(function(r){
+		var num = countNum(r, keyWord)
+		wordL.push({
+			name: r,
+			weight: num
+		})
+	});
+	return wordL
+}
+function findComByNum(wordL, len){
+	var comWord = []
+	wordL.forEach(function(w){
+		if (w.weight == len){
+			comWord.push(w.name)
+		}
+	});
+	return comWord;
+}
+function findNodeByLinks(nodeName, links, nodes, nodes_name){
+	
+	for (var i = 0; i < links.length; i++){
+		if (useLinks.indexOf(i) == -1){
+			
+			var link = links[i];
+			var targetIndex = nodes_name.indexOf(link.target);
+			var sourceIndex = nodes_name.indexOf(link.source);
+			if (nodeName == link.source &&
+			 targetIndex != -1){
+				clickNodes.push(nodes[targetIndex]);
+				useLinks.push(i);
+				findNodeByLinks(link.target, links, nodes, nodes_name);
+			} else if (nodeName == link.target &&
+			 sourceIndex != -1){
+				 clickNodes.push(nodes[sourceIndex]);
+				 useLinks.push(i);
+				 findNodeByLinks(link.source, links, nodes, nodes_name);
+			 }
+		} else{
+			return;
+		}
+	}
+}
 function splitDiv(divNum) {
     let html = '';
     let rowNum = Math.ceil(divNum / 2);
@@ -50,7 +141,13 @@ function drawNode(webkitDep, myChart) {
         tooltip: {
     		formatter: function(obj) {
     			// console.log(obj)
-    			return obj.data.text
+				var str = "";
+				if (obj.dataType == "node"){
+					str = "时间: "+obj.data.time+"<br>"+				
+				       "内容: "+obj.data.text+ "<br>"+
+					   "类型: "+obj.data.category+ "<br>";
+				}
+    			return str
     		}
     	},
 		legend:[
@@ -79,4 +176,24 @@ function drawNode(webkitDep, myChart) {
         ]
     };
     myChart.setOption(option);
+	myChart.on('click', function(params) {
+		var clickText = [params.data];
+		// console.log(params);
+		clickNodes = [params.data];
+		useLinks = []
+		// i++;
+		findNodeByLinks(params.data.name, webkitDep.links, webkitDep.nodes, webkitDep.nodes_name);
+		// if (i%2){
+		var keyWords = [];
+		keyWords = findComWords(clickNodes);	
+		var comWords = [];
+		comWords =findComByNum(keyWords, clickNodes.length)
+		console.log(comWords)
+		creatKnTable(clickNodes, comWords);
+		// }
+		// console.log(clickNodes)
+		drawThemeBubble({
+			"children": keyWords
+		})
+	});
 }
