@@ -245,11 +245,22 @@ function drawTendency() {
 					var categories = [];
 					var categories_name = [];
 					var reColor = []
+					var nodes_name = [];
 					d.nodes.forEach(function(node){
 						if (runumounsData.indexOf(node.name) != -1
 						&& nodeName.indexOf(node.name) != -1){
-							node.symbolSize = 10
+							node.symbolSize = 5
 							nodes.push(node);
+							nodes_name.push(node.name);
+							node.draggable = true;
+							d.links.forEach(function(link){
+								if (node.name == link.source ||
+								node.name == link.target){
+									if (node.symbolSize <= 80){
+										node.symbolSize += 5;
+									}
+								}
+							});
 							if (categories.indexOf(node.category) == -1){
 								categories.push(node.category);
 								categories_name.push({
@@ -264,9 +275,10 @@ function drawTendency() {
 						categories_name: categories_name,
 						links: d.links,
 						nodes: nodes,
-						color: reColor
+						color: reColor,
+						nodes_name: nodes_name
 					}
-					console.log(rData)
+					// console.log(rData)
 					drawNodeMatrix(1, rData);
 				});
 				
