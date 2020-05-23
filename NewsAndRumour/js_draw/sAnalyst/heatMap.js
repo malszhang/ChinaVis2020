@@ -279,29 +279,3 @@ function copyData(oldData, newData) {
         });
     }
 }
-
-[{
-        "province": '北京',
-        'date': [{
-                'date': '2019/12/1',
-                'num': 0
-            },
-            {
-                'date': '2019/12/2',
-                'num': 0
-            }
-        ]
-    },
-    {
-        "province": '山西',
-        'date': [{
-                'date': '2019/12/1',
-                'num': 0
-            },
-            {
-                'date': '2019/12/2',
-                'num': 0
-            }
-        ]
-    }
-]

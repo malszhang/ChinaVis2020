@@ -5,19 +5,17 @@ var theme_padding = {
     right: 5
 };
 
-$(document).ready(function () {
-    
-});
-
 function drawThemeBubble(root) {
 	let width = document.getElementById("themeBubble").offsetWidth - theme_padding.left - theme_padding.right;
-	let height = document.getElementById("themeBubble").offsetHeight - theme_padding.top - theme_padding.bottom;
+    let height = document.getElementById("themeBubble").offsetHeight - theme_padding.top - theme_padding.bottom;
+    d3.select('#theme_svg').remove();
 	let svg3 = d3.select("#themeBubble")
 	    .append("svg")
 	    .attr("id", "theme_svg")
 	    .attr("width", width)
 	    .attr("height", height)
-	    .attr("transform", "translate(" + theme_padding.left + "," + theme_padding.top + ")");
+        .attr("transform", "translate(" + theme_padding.left + "," + theme_padding.top + ")");
+        
 	let pack = d3.pack()
 	        .size([width, height])
 	        .padding(5);
