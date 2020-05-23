@@ -41,18 +41,29 @@ function findComWords(nodes){
 	var wordL = []
 	nodes.forEach(function(node){
 		node.keyword.forEach(function(word){
-			if (keyWord.indexOf(word) != -1){
+			if (keyWord.indexOf(word) == -1){
 				rData.push(word);
 			}
 			keyWord.push(word);
 		})
 	})
 	rData.forEach(function(r){
-		if (countNum(r, keyWord) == nodes.length){
-			wordL.push(r);
-		}
+		var num = countNum(r, keyWord)
+		wordL.push({
+			name: r,
+			weight: num
+		})
 	});
 	return wordL
+}
+function findComByNum(wordL, len){
+	var comWord = []
+	wordL.forEach(function(w){
+		if (w.weight == len){
+			comWord.push(w.name)
+		}
+	});
+	return comWord;
 }
 function findNodeByLinks(nodeName, links, nodes, nodes_name){
 	
@@ -173,8 +184,16 @@ function drawNode(webkitDep, myChart) {
 		// i++;
 		findNodeByLinks(params.data.name, webkitDep.links, webkitDep.nodes, webkitDep.nodes_name);
 		// if (i%2){
-			creatKnTable(clickNodes, findComWords(clickNodes));
+		var keyWords = [];
+		keyWords = findComWords(clickNodes);	
+		var comWords = [];
+		comWords =findComByNum(keyWords, clickNodes.length)
+		console.log(comWords)
+		creatKnTable(clickNodes, comWords);
 		// }
 		// console.log(clickNodes)
+		drawThemeBubble({
+			"children": keyWords
+		})
 	});
 }
