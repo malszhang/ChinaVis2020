@@ -1,7 +1,9 @@
 function drawLineBar(){
     var dom = document.getElementById("lineBar");
     var barChart = echarts.init(dom);
-
+    function getList() {
+        
+    }
     var barOption = {
         tooltip: {
             trigger: 'axis',
@@ -40,7 +42,7 @@ function drawLineBar(){
                 max: 250,
                 interval: 50,
                 axisLabel: {
-                    formatter: '{value} ml'
+                    formatter: '{value}'
                 }
             },
             {
@@ -50,7 +52,7 @@ function drawLineBar(){
                 max: 25,
                 interval: 5,
                 axisLabel: {
-                    formatter: '{value} °C'
+                    formatter: '{value}'
                 }
             }
         ],

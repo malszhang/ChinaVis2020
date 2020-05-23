@@ -1,6 +1,16 @@
+
 function drawAreaWord() {
     var myChart = echarts.init(document.getElementById('areaWord'));
-
+    function getList(wordList) {
+        let list = [];
+        for (var i = 0; i < wordList.length; i++) {
+            list.push({
+                name: wordList[i].name,
+                value: Number(wordList[i].value)
+            })
+        }
+        return list;
+    }
     myChart.showLoading();
 
     //通过ajax取数据
@@ -10,13 +20,8 @@ function drawAreaWord() {
         let words = data[0].date[35].keywords;
         //ajax请求成功时执行
         window.onload = setTimeout(function () {
-            var list = [];
-            for (var i = 0; i < words.length; i++) {
-                list.push({
-                    name: words[i].name,
-                    value: Number(words[i].value)
-                })
-            }
+            var list = getList(words);
+
             myChart.setOption({
                 title: {
                     text: '省份:' + province + '\n' + '时间:' + time,
