@@ -1,6 +1,28 @@
 var clickNodes = [];
 var useLinks = [];
 var i = 0;
+function timeDeal(time){
+	var date = time.split(" ");
+	var dateStr = date[0].split("/");
+	var year = dateStr[0];
+	var month = dateStr[1].length == 2? dateStr[1]: "0"+dateStr[1];
+	var day = dateStr[2].length == 2? dateStr[2]: "0"+dateStr[2];
+	return year + month + day + " "+date[1];
+}
+function sortData(data){
+	for (var i = 0; i < data.length; i++){
+		for (var j = i; j < data.length; j++){
+			var iTime = timeDeal(data[i].time);
+			var jTime = timeDeal(data[j].time);
+			if (iTime > jTime){
+				var t = data[i];
+				data[i] = data[j];
+				data[j] = t;
+			}
+		}
+	}
+	return data;
+}
 function strongWord(i){
     return "<strong>"+i+"、"+"</strong>";
 }
@@ -17,9 +39,11 @@ function markStr(str, wordL) {
     return str;
 }
 function creatKnTable(data, wordL) {
+	var data = sortData(data);
     $("#knTopic").html("共有谣言与新闻("+data.length+")条");
     var htmls = "";
     for (var i = 0; i < data.length; i++) {
+		htmls += "<tr class=\"active\"><td>"+data[i].time+" "+data[i].category+ "</td></tr>";
         htmls += "<tr class=\"active\"><td>" + strongWord(i+1)+markStr(data[i].text, wordL) + "</td></tr>";
     }
     $("#knTbody")
