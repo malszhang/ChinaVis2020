@@ -11,13 +11,6 @@ function splitData(rawData) {
 	};
 }
 
-function randomDatas(data) {
-	var newData = [];
-	for (var i = 0; i < data.values.length; i++) {
-		newData.push(Math.round(Math.random() * data.values[i][0]));
-	}
-	return newData;
-}
 /**
  *
  * @param dayCount
@@ -100,15 +93,21 @@ function drawTendency() {
 			},
 			yAxis: [{
 				scale: true,
-				splitArea: {
-					show: true
-				},
-				splitNumber: 4
+				splitNumber: 4,
+                splitArea: {
+                    show: false
+                },
+                splitLine:{
+                    show:false
+                }
 			}, {
 				scale: true,
-				splitArea: {
-					show: true
-				}
+                splitArea: {
+                    show: false
+                },
+                splitLine:{
+                    show:false
+                }
 			}],
 			dataZoom: [{
 					type: 'inside',

@@ -1,78 +1,143 @@
+function splitData(rawData) {
+    var categoryData = [];
+    var values = [];
+    for (var i = 0; i < rawData.length; i++) {
+        categoryData.push(rawData[i].splice(0, 1)[0]);
+        values.push(rawData[i])
+    }
+    return {
+        categoryData: categoryData,
+        values: values
+    };
+}
+function calculateMA(line, data) {
+    var result = [];
+    for (var i = 0; i < data.values.length; i++) {
+        result.push(data.values[i][line]);
+    }
+    return result;
+}
 function drawLineBar(){
     var dom = document.getElementById("lineBar");
     var barChart = echarts.init(dom);
-    function getList() {
-        
-    }
-    var barOption = {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'cross',
-                crossStyle: {
-                    color: '#999'
-                }
-            }
-        },
-        toolbox: {
-            feature: {
-                dataView: {show: true, readOnly: false},
-                magicType: {show: true, type: ['line', 'bar']},
-                restore: {show: true},
-                saveAsImage: {show: true}
-            }
-        },
-        legend: {
-            data: ['降水量', '平均温度']
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    $.getJSON("data/tendency.json", function(rawData) {
+        let data = splitData(rawData);
+        let barOption = {
+            tooltip: {
+                trigger: 'axis',
                 axisPointer: {
-                    type: 'shadow'
-                }
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value',
-                name: '水量',
-                min: 0,
-                max: 250,
-                interval: 50,
-                axisLabel: {
-                    formatter: '{value}'
+                    type: 'cross',
+                    formatter: function(obj) {
+                        var str = "";
+                        var len = 3 > obj.length ? obj.length : 3;
+                        for (var i = 0; i < len; i++) {
+                            if (obj[i].seriesType == "line") {
+                                str += obj[i].seriesName + "：" + obj[i].value + "<br>"
+                            }
+                        }
+                        // console.log(obj[0])
+                        return str;
+                    }
                 }
             },
-            {
-                type: 'value',
-                name: '温度',
-                min: 0,
-                max: 25,
-                interval: 5,
-                axisLabel: {
-                    formatter: '{value}'
+            toolbox: {
+                feature: {
+                    saveAsImage: {show: true}
                 }
-            }
-        ],
-        series: [
-            {
-                name: '降水量',
-                type: 'bar',
-                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+            },
+            legend: {
+                data: ['新增确诊', '舆情数量']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: data.categoryData,
+                    scale: true,
+                    boundaryGap: false,
+                    axisLine: {
+                        onZero: false
+                    },
+                    splitLine: {
+                        show: false
+                    },
+                    splitArea : {
+                        show : false
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '新增确诊',
+                    minInterval: 500,
+                    axisLabel: {
+                        formatter: '{value}'
+                    },
+                    scale: true,
+                    splitArea: {
+                        show: false
+                    },
+                    splitLine:{
+                        show:false
+                    },
+                    splitNumber: 5
+                },
+                {
+                    type: 'value',
+                    name: '舆情数量',
+                    minInterval: 10,
+                    axisLabel: {
+                        formatter: '{value}'
+                    },
+                    scale: true,
+                    splitArea: {
+                        show: false
+                    },
+                    splitLine:{
+                        show:false
+                    }
+                }
+            ],
+            dataZoom: [{
+                type: 'inside',
+                start: 0,
+                end: 10
             },
             {
-                name: '平均温度',
-                type: 'line',
-                yAxisIndex: 1,
-                data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+                show: true,
+                type: 'slider',
+                top: '90%',
+                start: 50,
+                end: 100
             }
-        ]
-    };
-    if (barOption && typeof barOption === "object") {
-        barChart.setOption(barOption, true);
-    }
+            ],
+            series: [
+                {
+                    name: '新增确诊',
+                    type: 'line',
+                    yAxisIndex: 0,
+                    data: calculateMA(0, data),
+                    showSymbol: false,
+                    smooth: true,
+                    z:999
+                },
+                {
+                    name: '舆情数量',
+                    type: 'bar',
+                    yAxisIndex: 1,
+                    data: calculateMA(1, data),
+                    barMinWidth:3,
+                    barMaxWidth:15,
+                    showSymbol: false,
+                    smooth: true,
+                    z:999
+                }
+            ]
+        };
+        if (barOption && typeof barOption === "object") {
+            barChart.setOption(barOption, true);
+        }
+    });
     window.addEventListener('resize', function() {
         barChart.resize();
     })
