@@ -65,7 +65,7 @@ function drawTendency() {
 				}
 			},
 			legend: [{
-				data: ['新增确诊', '新增治愈', '新增死亡']
+				data: ['累计确诊', '累计治愈', '累计死亡']
 			},
 			{
 				orient: 'vertical',
@@ -123,7 +123,7 @@ function drawTendency() {
 				}
 			],
 			series: [{
-					name: '新增确诊',
+					name: '累计确诊',
 					type: 'line',
 					yAxisIndex: 0,
 					data: calculateMA(0, data),
@@ -135,7 +135,7 @@ function drawTendency() {
 					// }
 				},
 				{
-					name: '新增治愈',
+					name: '累计治愈',
 					type: 'line',
 					yAxisIndex: 0,
 					showSymbol: false,
@@ -147,7 +147,7 @@ function drawTendency() {
 					// }
 				},
 				{
-					name: '新增死亡',
+					name: '累计死亡',
 					type: 'line',
 					yAxisIndex: 0,
 					showSymbol: false,
@@ -213,6 +213,27 @@ function drawTendency() {
 		window.addEventListener('resize', function() {
 			myChart.resize();
 		})
+		myChart.on('click', function(params){
+			var time = params.data.time;
+			var nodes = [];
+			for (var k = 1; k <= 2; k++){
+				for (var i = 0; i < rawData[k].length; i++){
+					for (var j = 0; j < rawData[k][i].data.length; j++){
+						var r = rawData[k][i].data[j];
+						if (r.time == time){
+							nodes.push(r);
+						}
+					}
+				}
+			}
+			var keyWords = [];
+			keyWords = findComWords(nodes);	
+			var comWords = [];
+			comWords =findComByNum(keyWords, nodes.length)
+			// console.log(comWords)
+			creatKnTable(nodes, comWords);
+			
+		})
 		myChart.on('datazoom', function(params) {
 				startValue = myChart.getOption().dataZoom[0].startValue;
 				endValue = myChart.getOption().dataZoom[0].endValue;
@@ -241,7 +262,7 @@ function drawTendency() {
 						nodeName.push(link.source)
 					});
 					var nodes = [];
-					var categories = [];
+					var categories = [[], []];
 					var categories_name = [];
 					var reColor = []
 					var nodes_name = [];
@@ -261,6 +282,11 @@ function drawTendency() {
 								}
 							});
 							if (categories.indexOf(node.category) == -1){
+								// if (node.name[0] == 'n'){
+								// 	categories[0].push(node.category);
+								// }else{
+								// 	categories[1].push(node.category);
+								// }
 								categories.push(node.category);
 								categories_name.push({
 									name: node.category
