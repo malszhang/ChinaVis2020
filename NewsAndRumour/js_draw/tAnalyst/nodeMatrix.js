@@ -23,8 +23,8 @@ function sortData(data){
 	}
 	return data;
 }
-function strongWord(i){
-    return "<strong>"+i+"、"+"</strong>";
+function strongWord(text){
+    return "<strong>"+text+"</strong>";
 }
 function markStr(str, wordL) {
     str = "  " + str;
@@ -40,15 +40,19 @@ function markStr(str, wordL) {
 }
 function creatKnTable(data, wordL) {
 	var data = sortData(data);
-    $("#knTopic").html("共有谣言与新闻("+data.length+")条");
+	var vertical = "class = \"el-divider el-divider--vertical\"";
+	var horizon = "class = \"el-divider el-divider--horizontal\"";
+    $("#knTopic").html("<b>共有谣言与新闻("+data.length+")条</b>");
     var htmls = "";
     for (var i = 0; i < data.length; i++) {
-		htmls += "<tr class=\"active\"><td>"+data[i].time+" "+data[i].category+ "</td></tr>";
-        htmls += "<tr class=\"active\"><td>" + strongWord(i+1)+markStr(data[i].text, wordL) + "</td></tr>";
+		// htmls += "<div><span>"+data[i].time+"</span><div "+vertical+
+		// "></div><span>"+data[i].category+"</span></div>";
+		htmls += "<div><span>"+data[i].time+"</span></div>";
+        htmls += "<span>" +strongWord(data[i].category+"：")+markStr(data[i].text, wordL) + "</span>";
+		htmls += "<div "+horizon+"></div>"
     }
-    $("#knTbody")
-        .html(htmls);
-    $("#kn").show();
+    $("#knBody").html(htmls);
+    // $("#kn").show();
 }
 function countNum(word, wordL){
 	var count = 0;
@@ -157,11 +161,15 @@ function drawNode(webkitDep, myChart) {
     option = {
 		color:webkitDep.color,
         title: {
-            text: 'Les Miserables',
-            subtext: 'Default layout',
-            top: 'bottom',
-            left: 'right'
+            // text: 'Les Miserables',
+            // subtext: 'Default layout',
+            // left: 'right'
+            // top: 'bottom',
         },
+		// grid:{
+		// 	top: "10%",
+		// 	bottom: "10%"
+		// },
         tooltip: {
     		formatter: function(obj) {
     			// console.log(obj)
@@ -176,13 +184,18 @@ function drawNode(webkitDep, myChart) {
     	},
 		legend:[
 			{
+				// orient: 'vertical',
+				// left: "right",
+				// top: "center",
+				// color: ['#fee090','#d73027', '#fdae61', '#f46d43'],
 				data: webkitDep.categories
 			}
 		],
         animation: false,
         series : [
             {
-                name: 'Les Miserables',
+                // name: 'Les Miserables',
+				// gridIndex: 0,
                 type: 'graph',
                 layout: 'force',
                 data: webkitDep.nodes,
@@ -193,6 +206,7 @@ function drawNode(webkitDep, myChart) {
                     position: 'right'
                 },
                 force: {
+					initLayout:"circular",
                     repulsion: 50
                 },
     			focusNodeAdjacency: true,
@@ -212,7 +226,7 @@ function drawNode(webkitDep, myChart) {
 		keyWords = findComWords(clickNodes);	
 		var comWords = [];
 		comWords =findComByNum(keyWords, clickNodes.length)
-		console.log(comWords)
+		// console.log(comWords)
 		creatKnTable(clickNodes, comWords);
 		// }
 		// console.log(clickNodes)
