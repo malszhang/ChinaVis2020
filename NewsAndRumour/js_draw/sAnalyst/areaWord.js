@@ -1,5 +1,5 @@
 
-function drawAreaWord() {
+function drawAreaWord(provinceDate) {
     var myChart = echarts.init(document.getElementById('areaWord'));
     function getList(wordList) {
         let list = [];
@@ -15,9 +15,18 @@ function drawAreaWord() {
 
     //通过ajax取数据
     $.get('data/countkeywords.json', function (data) {
-        let province = data[0].province;
-        let time = data[0].date[35].date;
-        let words = data[0].date[35].keywords;
+        let province = provinceDate.province;
+        let time = provinceDate.date;
+        let words;
+        for(let i = 0;i<data.length;++i){
+            if(data[i].province == province){
+                for(let j = 0;j<data[i].date.length;++j){
+                    if(data[i].date[j].date == time){
+                        words = data[i].date[j].keywords;
+                    }
+                }
+            }
+        }
         //ajax请求成功时执行
         window.onload = setTimeout(function () {
             var list = getList(words);

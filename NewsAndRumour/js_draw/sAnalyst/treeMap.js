@@ -1,84 +1,28 @@
-function drawTreeMap() {
+function drawTreeMap(provinceDate) {
+
     var dom = document.getElementById("treeMap");
     var treeMapChart = echarts.init(dom);
     var treeOption = null;
-    function getLevelOption() {
-        return [
-            {
-                itemStyle: {
-                    borderColor: '#777',
-                    borderWidth: 0,
-                    gapWidth: 1
-                },
-                upperLabel: {
-                    show: false
-                }
-            },
-            {
-                itemStyle: {
-                    borderColor: '#555',
-                    borderWidth: 5,
-                    gapWidth: 1
-                },
-                emphasis: {
-                    itemStyle: {
-                        borderColor: '#ddd'
-                    }
-                }
-            },
-            {
-                colorSaturation: [0.35, 0.5],
-                itemStyle: {
-                    borderWidth: 5,
-                    gapWidth: 1,
-                    borderColorSaturation: 0.6
-                }
-            }
-        ];
-    }
-    function getChildren(childrenList) {
 
-        let children = [];
-        for(let i = 0 ; i < childrenList.length ; i++){
-            children.push({
-                name:childrenList[i].name,
-                value:childrenList[i].value
-            })
-        }
-        return children;
-    }
-    function getList(data){
-        let list = [];
-        list.push({
-            name: '境内疫情',
-            value: Number(data[22].date[85]['境内疫情'].value),
-            children:getChildren(data[22].date[85]['境内疫情'].children)
-        });
-        list.push({
-            name: '境外疫情',
-            value: Number(data[22].date[85]['境外疫情'].value),
-            children:getChildren(data[22].date[85]['境外疫情'].children)
-        });
-        list.push({
-            name: '政府行动',
-            value: Number(data[22].date[85]['政府行动'].value),
-            children:getChildren(data[22].date[85]['政府行动'].children)
-        });
-        list.push({
-            name: '行业战疫',
-            value: Number(data[22].date[85]['行业战疫'].value),
-            children:getChildren(data[22].date[85]['行业战疫'].children)
-        });
-        return list;
-    }
     treeMapChart.showLoading();
     $.get('data/textcategory.json', function (data) {
         treeMapChart.hideLoading();
         var formatUtil = echarts.format;
 
-        let province = data[22].province;
-        let time = data[22].date[85].date;
-        let list = getList(data);
+        let province = provinceDate.province;;
+        let time = provinceDate.date;
+        
+        let selectedData = [];
+        for(let i = 0;i<data.length;++i){
+            if(data[i].province == province){
+                for(let j = 0;j<data[i].date.length;++j){
+                    if(data[i].date[j].date == time){
+                        selectedData = data[i].date[j];
+                    }
+                }
+            }
+        }
+        let list = getList(selectedData);
 
         treeMapChart.setOption(
             treeOption = {
@@ -101,7 +45,6 @@ function drawTreeMap() {
                     ].join('');
                 }
             },
-
             series: [
                 {
                     name: province,
@@ -126,11 +69,82 @@ function drawTreeMap() {
             ]
         });
     });
-
     if (treeOption && typeof treeOption === "object") {
         treeMapChart.setOption(treeOption, true);
     }
     window.addEventListener('resize', function() {
         treeMapChart.resize();
     })
+}
+
+function getList(data){
+    let list = [];
+    list.push({
+        name: '境内疫情',
+        value: Number(data['境内疫情'].value),
+        children:getChildren(data['境内疫情'].children)
+    });
+    list.push({
+        name: '境外疫情',
+        value: Number(data['境外疫情'].value),
+        children:getChildren(data['境外疫情'].children)
+    });
+    list.push({
+        name: '政府行动',
+        value: Number(data['政府行动'].value),
+        children:getChildren(data['政府行动'].children)
+    });
+    list.push({
+        name: '行业战疫',
+        value: Number(data['行业战疫'].value),
+        children:getChildren(data['行业战疫'].children)
+    });
+    return list;
+}
+
+function getChildren(childrenList) {
+
+    let children = [];
+    for(let i = 0 ; i < childrenList.length ; i++){
+        children.push({
+            name:childrenList[i].name,
+            value:childrenList[i].value
+        })
+    }
+    return children;
+}
+
+function getLevelOption() {
+    return [
+        {
+            itemStyle: {
+                borderColor: '#777',
+                borderWidth: 0,
+                gapWidth: 1
+            },
+            upperLabel: {
+                show: false
+            }
+        },
+        {
+            itemStyle: {
+                borderColor: '#555',
+                borderWidth: 5,
+                gapWidth: 1
+            },
+            emphasis: {
+                itemStyle: {
+                    borderColor: '#ddd'
+                }
+            }
+        },
+        {
+            colorSaturation: [0.35, 0.5],
+            itemStyle: {
+                borderWidth: 5,
+                gapWidth: 1,
+                borderColorSaturation: 0.6
+            }
+        }
+    ];
 }

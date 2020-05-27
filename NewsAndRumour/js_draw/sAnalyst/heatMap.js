@@ -8,6 +8,9 @@ var i = 0;
 var rootData;
 var yRange = [];
 var yDomain = [];
+var xScale;
+var yScale;
+var expandData = []; // 热力图分开时的数据
 $(document).ready(function () {
     let width = document.getElementById("heatMap").offsetWidth - heat_padding.left - heat_padding.right;
     let height = document.getElementById("heatMap").offsetHeight - heat_padding.top - heat_padding.bottom;
@@ -164,7 +167,9 @@ function update_tree(source) {
     });
     let heat_g = document.getElementById('heat_g');
     if (!heat_g) {
-        drawHeatMap_heat('1');
+        $.getJSON('data/provinceCount.json', function (data) {
+            drawHeatMap_heat(data);
+        })
     }
 }
 // 树图连线
@@ -194,30 +199,7 @@ function click(d) {
     update_tree(d);
     update_heat(heatData, flag);
 }
-
-var testHeatDate = [];
-getTestData();
-async function getTestData() {
-    await $.getJSON('data/province.json', function (data) {
-        let province = data.children;
-        for (let i = 0; i < province.length; ++i) {
-            for (let j = 0; j < province[i].children.length; ++j) {
-                let dateData = [];
-                for (let index = 1; index <= 30; ++index) {
-                    dateData.push({
-                        date: '2020/1/' + index,
-                        num: parseInt(Math.random() * 20)
-                    })
-                }
-                testHeatDate.push({
-                    province: province[i].children[j].name,
-                    date: dateData
-                });
-            }
-        }
-    });
-}
-
+// 绘制热力图
 function drawHeatMap_heat(data) {
     let marginLeft = document.getElementById('tree_g').getBoundingClientRect().top + heat_padding.left * 1;
     let heat_g = d3.select(".heat_svg")
@@ -225,41 +207,146 @@ function drawHeatMap_heat(data) {
         .attr("transform", "translate(" + marginLeft + "," + heat_padding.top + ")")
         .attr("id", "heat_g");
 
-    let yScale = d3.scaleOrdinal()
+    // 定义Y轴比例尺    
+    yScale = d3.scaleOrdinal()
         .domain(yDomain)
         .range(yRange);
+    // 热力图左侧边框距离
+    let heatWidth = d3.select('#heat_svg').attr('width') - 1.3 * marginLeft;
 
-    let heatWidth = d3.select('#heat_svg').attr('width') - marginLeft;
-
-    let xDomain = getXDomain(testHeatDate);
-    let xScale = d3.scaleBand()
+    // 定义X轴比例尺
+    let xDomain = getXDomain(data);
+    xScale = d3.scaleBand()
         .domain(xDomain)
         .range([0, heatWidth]);
+    drawHeat(data, heat_g);
+}
 
-    for (let i = 0; i < testHeatDate.length; ++i) {
-        let rect = heat_g.selectAll('.'+ testHeatDate[i].province)
-            .data(testHeatDate[i].date)
+function drawHeat(data, heat_g) {
+    for (let i = 0; i < data.length; ++i) {
+        let rect = heat_g.append('g')
+            .attr('class', data[i].province)
+            .selectAll('rect')
+            .data(data[i].date)
             .enter()
             .append('rect')
-            .attr('class',testHeatDate[i].province)
+            .attr('class', data[i].province)
             .attr('x', function (d) {
                 return heat_padding.left * 1.5 + xScale(d.date);
             })
             .attr('y', function (d) {
-                return yScale(testHeatDate[i].province) - 3.5;
+                return yScale(data[i].province) - 3.5;
             })
             .attr('width', 7)
             .attr('height', 7)
             .style('stroke', 'black')
-            .style('fill', 'blue');
+            .style('fill', function (d) {
+                if (d.num !== 0) {
+                    return 'blue';
+                } else return 'gray';
+            })
+            .on('click', function (d) {
+                if (d.num !== 0) {
+                    let provinceDate = {
+                        province: data[i].province,
+                        date: d.date
+                    };
+                    drawAreaWord(provinceDate);
+                    drawTreeMap(provinceDate);
+                }
+            })
+            .append('svg:title')
+            .text(function (d) {
+                return data[i].province + '(' + d.date + '):' + d.num;
+            });
     }
 }
 
 function update_heat(data, flag) {
     let heat_g = d3.select("#heat_g");
+    // 合并
+    if (flag == false) {
+        let mergeData = [];
+        let yStart = d3.select('.' + data[0].name)
+            .select('rect')
+            .attr('y');
 
+        let yEnd = heat_g.select('.' + data[data.length - 1].name)
+            .select('rect')
+            .attr('y');
 
-    console.log(data);
+        for (let i = 0; i < data.length; ++i) {
+            expandData.push({
+                province: data[i].name,
+                date: []
+            });
+            heat_g.select('.' + data[i].name)
+                .selectAll('rect')
+                .transition()
+                .duration(750)
+                .attr('height', function (d) {
+                    expandData[expandData.length - 1].date.push(d);
+                    let isExist = false;
+                    for (let i = 0; i < mergeData.length; ++i) {
+                        if (mergeData[i].date == d.date) {
+                            mergeData[i].num += d.num;
+                            isExist = true;
+                            break;
+                        }
+                    }
+                    if (!isExist) mergeData.push(d);
+                    return 0;
+                })
+                .remove();
+        }
+        // console.log(expandData);
+        heat_g.append('g')
+            .attr('class', data[0].parent)
+            .selectAll('rect')
+            .data(mergeData)
+            .enter()
+            .append('rect')
+            .attr('x', function (d) {
+                return heat_padding.left * 1.5 + xScale(d.date);
+            })
+            .attr('y', yStart)
+            .attr('width', 7)
+            .attr('height', yEnd - yStart + 7) //9 * data.length
+            .style('stroke', 'black')
+            .style('fill', function (d) {
+                if (d.num !== 0) {
+                    return 'blue';
+                } else return 'gray';
+            })
+            .append('svg:title')
+            .text(function (d) {
+                return data[0].parent + '(' + d.date + '):' + d.num;
+            });
+    }
+    // 分开
+    else {
+        heat_g.select('.' + data[0].parent)
+            .selectAll('rect')
+            .transition()
+            .duration(750)
+            .attr('height', 0)
+            .remove();
+
+        let expand = [];
+        for (let i = 0; i < data.length; ++i) {
+            let delIndex = 0;
+            for (let j = 0; j < expandData.length; ++j) {
+                if (data[i].name == expandData[j].province) {
+                    expand.push(expandData[j]);
+                    delIndex = j;
+                    break;
+                }
+            }
+            expandData.splice(delIndex, 1);
+        }
+        drawHeat(expand, heat_g);
+    }
+
 }
 
 function getXDomain(data) {
