@@ -25,25 +25,6 @@ function drawLineBar(){
         let barOption = {
             tooltip: {
                 trigger: 'axis',
-                axisPointer: {
-                    type: 'cross',
-                    formatter: function(obj) {
-                        var str = "";
-                        var len = 3 > obj.length ? obj.length : 3;
-                        for (var i = 0; i < len; i++) {
-                            if (obj[i].seriesType == "line") {
-                                str += obj[i].seriesName + "：" + obj[i].value + "<br>"
-                            }
-                        }
-                        // console.log(obj[0])
-                        return str;
-                    }
-                }
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {show: true}
-                }
             },
             legend: {
                 data: ['新增确诊', '舆情数量']

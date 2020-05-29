@@ -45,12 +45,6 @@ function drawAreaWord(provinceDate) {
                         color:'#1286ba',
                     }
                 },
-                toolbox: {
-                    right:'5%',
-                    feature: {
-                        saveAsImage: {}
-                    }
-                },
                 series: [{
                     type: 'wordCloud',
                     sizeRange: [15, 40],
