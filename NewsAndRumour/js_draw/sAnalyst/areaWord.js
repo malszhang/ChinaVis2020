@@ -45,17 +45,8 @@ function drawAreaWord(provinceDate) {
                         color:'#1286ba',
                     }
                 },
-                toolbox: {
-                    right:'5%',
-                    feature: {
-                        dataView: {readOnly: true},
-                        restore: {},
-                        saveAsImage: {}
-                    }
-                },
                 series: [{
                     type: 'wordCloud',
-                    data: list,
                     sizeRange: [15, 40],
                     rotationRange: [0, 0],  //设置为不旋转
                     gridSize: 2,            //字符之间的间隔
@@ -63,8 +54,12 @@ function drawAreaWord(provinceDate) {
                     drawOutOfBound: false,
                     textStyle: {
                         //正常情况下的样式
-                        normal: {
-                            color: ['#575757','#1286ba','#e65457']
+                        normal:{
+                            color:function () {
+                                let colorArr = ['#1286ba','#d73027','#ffbb05', '#313695'];
+                                let colorIndex = Math.ceil(Math.random() * 3);
+                                return colorArr[colorIndex];
+                            }
                         },
                         //鼠标悬浮时的样式
                         emphasis: {
@@ -73,6 +68,7 @@ function drawAreaWord(provinceDate) {
                             color: '#00467A'
                         }
                     },
+                    data: list,
                 }]
             });
         }, 100)
