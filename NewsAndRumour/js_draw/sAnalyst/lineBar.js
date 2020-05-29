@@ -138,6 +138,15 @@ function drawLineBar(){
             barChart.setOption(barOption, true);
         }
     });
+    //获取框选的时间
+    barChart.on('dataZoom',function(){
+        let startValue = barChart.getOption().dataZoom[1].startValue;
+        let endValue = barChart.getOption().dataZoom[1].endValue;
+        let start = barChart.getOption().xAxis[0].data[startValue];
+        let end = barChart.getOption().xAxis[0].data[endValue];
+        setTimeRangeForHeat(start, end);
+
+    })
     window.addEventListener('resize', function() {
         barChart.resize();
     })
