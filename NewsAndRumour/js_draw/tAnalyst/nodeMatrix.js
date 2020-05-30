@@ -230,8 +230,8 @@ function drawNode(webkitDep, myChart) {
 		creatKnTable(clickNodes, comWords);
 		// }
 		// console.log(clickNodes)
-		drawThemeBubble({
-			"children": keyWords
-		})
+		// drawThemeBubble({
+		// 	"children": keyWords
+		// })
 	});
 }
