@@ -1,6 +1,33 @@
 var clickNodes = [];
 var useLinks = [];
 var i = 0;
+function divideCate(categories){
+	var result = [[],[]];
+	categories.forEach(function(cate){
+		if (cate.length == 4){
+			result[0].push(cate);
+		}else{
+			result[1].push(cate);
+		}
+	});
+	return result;
+}
+function nodeToBubble(nodes, keyWords){
+	var buData = [];
+	keyWords.forEach(function(word){
+		var bubble = [];
+		nodes.forEach(function(node){
+			if (node.keyword.indexOf(word.cate) != -1){
+				bubble.push(node.category);
+			}
+		});
+		buData.push({
+			name: word.cate,
+			weight: findComWords([{keyword:bubble}])
+		});
+	});
+	return buData;
+}
 function timeDeal(time){
 	var date = time.split(" ");
 	var dateStr = date[0].split("/");
@@ -8,6 +35,15 @@ function timeDeal(time){
 	var month = dateStr[1].length == 2? dateStr[1]: "0"+dateStr[1];
 	var day = dateStr[2].length == 2? dateStr[2]: "0"+dateStr[2];
 	return year + month + day + " "+date[1];
+}
+function isInData(data, d){
+		
+	data.forEach(function(t){
+		if (t.name == d.name){
+			return true;
+		}
+	});
+	return false;
 }
 function sortData(data){
 	for (var i = 0; i < data.length; i++){
@@ -78,8 +114,8 @@ function findComWords(nodes){
 	rData.forEach(function(r){
 		var num = countNum(r, keyWord)
 		wordL.push({
-			name: r,
-			weight: num
+			cate: r,
+			num: num
 		})
 	});
 	return wordL
@@ -87,8 +123,8 @@ function findComWords(nodes){
 function findComByNum(wordL, len){
 	var comWord = []
 	wordL.forEach(function(w){
-		if (w.weight == len){
-			comWord.push(w.name)
+		if (w.num == len){
+			comWord.push(w.cate)
 		}
 	});
 	return comWord;
@@ -103,19 +139,28 @@ function findNodeByLinks(nodeName, links, nodes, nodes_name){
 			var sourceIndex = nodes_name.indexOf(link.source);
 			if (nodeName == link.source &&
 			 targetIndex != -1){
-				clickNodes.push(nodes[targetIndex]);
-				useLinks.push(i);
-				findNodeByLinks(link.target, links, nodes, nodes_name);
+				 if (!isInData(clickNodes, nodes[targetIndex])){
+				 	// console.log(isInData(clickNodes, nodes[targetIndex]))
+					clickNodes.push(nodes[targetIndex])
+					useLinks.push(i);
+					findNodeByLinks(link.target, links, nodes, nodes_name);
+				 }
+				
 			} else if (nodeName == link.target &&
 			 sourceIndex != -1){
-				 clickNodes.push(nodes[sourceIndex]);
-				 useLinks.push(i);
-				 findNodeByLinks(link.source, links, nodes, nodes_name);
+				 if (!isInData(clickNodes, nodes[sourceIndex])){
+					 // console.log(isInData(clickNodes, nodes[sourceIndex]))
+				 	clickNodes.push(nodes[sourceIndex])
+					useLinks.push(i);
+					findNodeByLinks(link.source, links, nodes, nodes_name);
+				 }
+				 
 			 }
 		} else{
-			return;
+			continue;
 		}
 	}
+	return;
 }
 function splitDiv(divNum) {
     let html = '';
@@ -158,7 +203,9 @@ function drawNodeMatrix(dataNum, data) {
 
 function drawNode(webkitDep, myChart) {
     var nColors = ['#74add1', '#313695', '#4575b4', '#abd9e9','#fee090','#d73027', '#fdae61', '#f46d43'];
-    option = {
+    // console.log(webkitDep.categories);
+	var legendData = divideCate(webkitDep.categories);
+	option = {
 		color:webkitDep.color,
         title: {
             // text: 'Les Miserables',
@@ -184,11 +231,16 @@ function drawNode(webkitDep, myChart) {
     	},
 		legend:[
 			{
-				// orient: 'vertical',
-				// left: "right",
-				// top: "center",
-				// color: ['#fee090','#d73027', '#fdae61', '#f46d43'],
-				data: webkitDep.categories
+				orient: 'vertical',
+				left: "left",
+				top: "center",
+				data: legendData[0]
+			},
+			{
+				orient: 'vertical',
+				right: "right",
+				top: "center",
+				data: legendData[1]
 			}
 		],
         animation: false,
@@ -214,8 +266,10 @@ function drawNode(webkitDep, myChart) {
         ]
     };
     myChart.setOption(option);
+	window.addEventListener('resize', function() {
+		myChart.resize();
+	})
 	myChart.on('click', function(params) {
-		var clickText = [params.data];
 		// console.log(params);
 		clickNodes = [params.data];
 		useLinks = []
@@ -231,7 +285,7 @@ function drawNode(webkitDep, myChart) {
 		// }
 		// console.log(clickNodes)
 		drawThemeBubble({
-			"children": keyWords
+			"children": nodeToBubble(clickNodes, keyWords)
 		})
 	});
 }
