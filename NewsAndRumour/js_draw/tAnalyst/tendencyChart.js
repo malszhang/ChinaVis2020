@@ -270,7 +270,7 @@ function drawTendency() {
 						nodeName.push(link.source)
 					});
 					var nodes = [];
-					var categories = [[], []];
+					var categories = [];
 					var categories_name = [];
 					var reColor = []
 					var nodes_name = [];
