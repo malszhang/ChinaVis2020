@@ -5,12 +5,17 @@ var heat_padding = {
     right: 5
 };
 var i = 0;
-var rootData;
-var yRange = [];
-var yDomain = [];
-var xScale;
-var yScale;
+var rootData; //树图数据
+var yRange = []; //y轴的值域 树图叶子节点的坐标
+var yDomain = []; //y轴的定义域 每个省份的名称
+var xDomain; //x轴的定义域 日期
+var xScale; //x轴的比例尺
+var yScale; //y轴的比例尺
 var expandData = []; // 热力图分开时的数据
+var heatColor = ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43',
+'#d73027', '#a50026'];
+// var colorDomain = []; // 颜色的定义域 每省每日的舆情数值
+var colorScale = d3.scaleOrdinal(); //热力图颜色的比例尺
 $(document).ready(function () {
     let width = document.getElementById("heatMap").offsetWidth - heat_padding.left - heat_padding.right;
     let height = document.getElementById("heatMap").offsetHeight - heat_padding.top - heat_padding.bottom;
@@ -27,7 +32,12 @@ $(document).ready(function () {
         drawHeatMap_tree(treeData, width, height);
     });
 });
-// 绘制省份树图
+/**
+ * 定义树图的布局及计算节点
+ * @param {*} treeData 树图的原始数据
+ * @param {*} width svg的宽
+ * @param {*} height svg的高
+ */
 function drawHeatMap_tree(treeData, width, height) {
     let tree = d3.tree()
         .size([height, width]);
@@ -40,7 +50,10 @@ function drawHeatMap_tree(treeData, width, height) {
     root._y = heat_padding.left;
     update_tree(root);
 }
-// 绘制、更新树图
+/**
+ * 绘制、更新树图
+ * @param {*} source 更新的数据
+ */
 function update_tree(source) {
     let svg = d3.select("#tree_g");
 
@@ -172,7 +185,11 @@ function update_tree(source) {
         })
     }
 }
-// 树图连线
+/**
+ * 树图连线
+ * @param {*} s 
+ * @param {*} d 
+ */
 function diagonal(s, d) {
     path = `M ${s.y} ${s.x}
             C ${(s.y + d.y) / 2} ${s.x},
@@ -181,7 +198,10 @@ function diagonal(s, d) {
 
     return path;
 }
-// 树图点击进行收放
+/**
+ * 树图点击进行收放
+ * @param {*} d 
+ */
 function click(d) {
     let flag; //false 合并 true 分开
     let heatData = [];
@@ -199,7 +219,10 @@ function click(d) {
     update_tree(d);
     update_heat(heatData, flag);
 }
-// 绘制热力图
+/**
+ * 定义热力图相关的比例尺、位置并绘制
+ * @param {*} data 所需的数据
+ */
 function drawHeatMap_heat(data) {
     let marginLeft = document.getElementById('tree_g').getBoundingClientRect().top + heat_padding.left * 1;
     let heat_g = d3.select(".heat_svg")
@@ -215,15 +238,22 @@ function drawHeatMap_heat(data) {
     let heatWidth = d3.select('#heat_svg').attr('width') - 1.3 * marginLeft;
 
     // 定义X轴比例尺
-    let xDomain = getXDomain(data);
+    xDomain = getXDomain(data);
     xScale = d3.scaleBand()
         .domain(xDomain)
         .range([0, heatWidth]);
+    let colorDomain = getcolorDomain(data);
+    colorScale.domain(colorDomain).range(heatColor);
     drawHeat(data, heat_g);
 }
 
 function drawHeat(data, heat_g) {
+    // 计算连续的两个矩形之间的距离
+    let rectWidth = xScale(data[0].date[1].date) - xScale(data[0].date[0].date);
+    rectWidth = rectWidth * 0.7;
+
     for (let i = 0; i < data.length; ++i) {
+        data[i]._date = [...data[i].date];
         let rect = heat_g.append('g')
             .attr('class', data[i].province)
             .selectAll('rect')
@@ -237,13 +267,13 @@ function drawHeat(data, heat_g) {
             .attr('y', function (d) {
                 return yScale(data[i].province) - 3.5;
             })
-            .attr('width', 7)
+            .attr('width', rectWidth)
             .attr('height', 7)
             .style('stroke', 'black')
             .style('fill', function (d) {
                 if (d.num !== 0) {
-                    return 'blue';
-                } else return 'gray';
+                    return colorScale(d.num);
+                } else return 'white';
             })
             .on('click', function (d) {
                 if (d.num !== 0) {
@@ -261,12 +291,17 @@ function drawHeat(data, heat_g) {
             });
     }
 }
-
+/**
+ * 合并或者分开某一地域的矩形
+ * @param {*} data 更新的数据
+ * @param {*} flag 判断合并或分来
+ */
 function update_heat(data, flag) {
     let heat_g = d3.select("#heat_g");
     // 合并
     if (flag == false) {
         let mergeData = [];
+        // 计算合并后矩形的起始Y坐标
         let yStart = d3.select('.' + data[0].name)
             .select('rect')
             .attr('y');
@@ -280,6 +315,7 @@ function update_heat(data, flag) {
                 province: data[i].name,
                 date: []
             });
+            // 删除矩形
             heat_g.select('.' + data[i].name)
                 .selectAll('rect')
                 .transition()
@@ -298,8 +334,13 @@ function update_heat(data, flag) {
                     return 0;
                 })
                 .remove();
+            // 删除<g>标签
+            heat_g.select('.' + data[i].name)
+                .transition()
+                .duration(750)
+                .remove();
         }
-        // console.log(expandData);
+        // 绘制合并之后的矩形
         heat_g.append('g')
             .attr('class', data[0].parent)
             .selectAll('rect')
@@ -311,7 +352,7 @@ function update_heat(data, flag) {
             })
             .attr('y', yStart)
             .attr('width', 7)
-            .attr('height', yEnd - yStart + 7) //9 * data.length
+            .attr('height', yEnd - yStart + 7) 
             .style('stroke', 'black')
             .style('fill', function (d) {
                 if (d.num !== 0) {
@@ -325,11 +366,17 @@ function update_heat(data, flag) {
     }
     // 分开
     else {
+
         heat_g.select('.' + data[0].parent)
             .selectAll('rect')
             .transition()
             .duration(750)
             .attr('height', 0)
+            .remove();
+        
+        heat_g.select('.' + data[0].parent)
+            .transition()
+            .duration(750)
             .remove();
 
         let expand = [];
@@ -346,9 +393,63 @@ function update_heat(data, flag) {
         }
         drawHeat(expand, heat_g);
     }
+}
+/**
+ * 根据时间重绘热力图
+ * @param {*} start 开始时间
+ * @param {*} end 结束时间
+ */
+function setTimeRangeForHeat(start, end) {
+    let selectedDomain = [];
+    let delRect = [];
+    let startIndex = xDomain.indexOf(start);
+    let endIndex = xDomain.indexOf(end);
+    for (let i = 0; i < xDomain.length; ++i) {
+        if ((i >= startIndex) && (i <= endIndex)) {
+            selectedDomain.push(xDomain[i]);
+        } else {
+            delRect.push(xDomain[i]);
+        }
+    }
+    xScale.domain(selectedDomain);
+    let rectWidth = xScale(selectedDomain[1]) - xScale(selectedDomain[0]);
+    rectWidth = rectWidth * 0.7;
+    let heat_g = d3.select("#heat_g");
+    heat_g.selectAll('g')
+        .each(function (d) {
+            d3.select(this).selectAll('rect')
+                .transition()
+                .duration(750)
+                .attr('height', function (p) {
+                    if (delRect.indexOf(p.date) !== -1) {
+                        return 0;
+                    }
+                    return 7;
+                })
+                .attr('x', function (p) {
+                    if (delRect.indexOf(p.date) !== -1) {
+                        return 0;
+                    }
+                    return heat_padding.left * 1.5 + xScale(p.date)
+                })
+                .attr('width', rectWidth);
+        })
 
 }
 
+function getcolorDomain(data){
+    let colorDomain = [];
+    for(let i =0;i<data.length;++i){
+        for(let j = 0;j<data[i].date.length;++j){
+            colorDomain.push(data[i].date[j].num);
+        }
+    }
+    return colorDomain;
+}
+/**
+ * 获取X轴的定义域
+ * @param {*} data 
+ */
 function getXDomain(data) {
     let xDomain = [];
     date = data[0].date;
@@ -357,7 +458,11 @@ function getXDomain(data) {
     }
     return xDomain;
 }
-
+/**
+ * 复制数据 获取树图点击后收缩或者展开的省份数据
+ * @param {*} oldData 
+ * @param {*} newData 
+ */
 function copyData(oldData, newData) {
     for (let i = 0; i < oldData.length; ++i) {
         newData.push({

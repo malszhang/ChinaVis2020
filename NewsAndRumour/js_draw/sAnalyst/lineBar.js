@@ -25,25 +25,6 @@ function drawLineBar(){
         let barOption = {
             tooltip: {
                 trigger: 'axis',
-                axisPointer: {
-                    type: 'cross',
-                    formatter: function(obj) {
-                        var str = "";
-                        var len = 3 > obj.length ? obj.length : 3;
-                        for (var i = 0; i < len; i++) {
-                            if (obj[i].seriesType == "line") {
-                                str += obj[i].seriesName + "：" + obj[i].value + "<br>"
-                            }
-                        }
-                        // console.log(obj[0])
-                        return str;
-                    }
-                }
-            },
-            toolbox: {
-                feature: {
-                    saveAsImage: {show: true}
-                }
             },
             legend: {
                 data: ['新增确诊', '舆情数量']
@@ -138,6 +119,15 @@ function drawLineBar(){
             barChart.setOption(barOption, true);
         }
     });
+    //获取框选的时间
+    barChart.on('dataZoom',function(){
+        let startValue = barChart.getOption().dataZoom[1].startValue;
+        let endValue = barChart.getOption().dataZoom[1].endValue;
+        let start = barChart.getOption().xAxis[0].data[startValue];
+        let end = barChart.getOption().xAxis[0].data[endValue];
+        setTimeRangeForHeat(start, end);
+
+    })
     window.addEventListener('resize', function() {
         barChart.resize();
     })
