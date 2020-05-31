@@ -12,8 +12,10 @@ var xDomain; //x轴的定义域 日期
 var xScale; //x轴的比例尺
 var yScale; //y轴的比例尺
 var expandData = []; // 热力图分开时的数据
-var heatColor = ['#313695', '#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#ffffbf', '#fee090', '#fdae61', '#f46d43',
-'#d73027', '#a50026'];
+var heatColor = 
+// ['#722201', '#cc3e01', '#f16d2b', '#f59971', '#fec1a5'];
+['#313695', '#4575b4', '#74add1', '#abd9e9', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026'];
+// heatColor = heatColor.reverse();
 // var colorDomain = []; // 颜色的定义域 每省每日的舆情数值
 var colorScale = d3.scaleOrdinal(); //热力图颜色的比例尺
 $(document).ready(function () {
