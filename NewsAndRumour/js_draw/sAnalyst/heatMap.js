@@ -356,7 +356,7 @@ function update_heat(data, flag) {
             .style('stroke', 'black')
             .style('fill', function (d) {
                 if (d.num !== 0) {
-                    return 'blue';
+                    return colorScale(d.num);;
                 } else return 'gray';
             })
             .append('svg:title')
