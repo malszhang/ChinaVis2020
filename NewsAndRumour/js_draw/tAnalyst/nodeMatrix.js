@@ -9,6 +9,15 @@ function timeDeal(time){
 	var day = dateStr[2].length == 2? dateStr[2]: "0"+dateStr[2];
 	return year + month + day + " "+date[1];
 }
+function isInData(data, d){
+		
+	data.forEach(function(t){
+		if (t.name == d.name){
+			return true;
+		}
+	});
+	return false;
+}
 function sortData(data){
 	for (var i = 0; i < data.length; i++){
 		for (var j = i; j < data.length; j++){
@@ -103,19 +112,28 @@ function findNodeByLinks(nodeName, links, nodes, nodes_name){
 			var sourceIndex = nodes_name.indexOf(link.source);
 			if (nodeName == link.source &&
 			 targetIndex != -1){
-				clickNodes.push(nodes[targetIndex]);
-				useLinks.push(i);
-				findNodeByLinks(link.target, links, nodes, nodes_name);
+				 if (!isInData(clickNodes, nodes[targetIndex])){
+				 	// console.log(isInData(clickNodes, nodes[targetIndex]))
+					clickNodes.push(nodes[targetIndex])
+					useLinks.push(i);
+					findNodeByLinks(link.target, links, nodes, nodes_name);
+				 }
+				
 			} else if (nodeName == link.target &&
 			 sourceIndex != -1){
-				 clickNodes.push(nodes[sourceIndex]);
-				 useLinks.push(i);
-				 findNodeByLinks(link.source, links, nodes, nodes_name);
+				 if (!isInData(clickNodes, nodes[sourceIndex])){
+					 // console.log(isInData(clickNodes, nodes[sourceIndex]))
+				 	clickNodes.push(nodes[sourceIndex])
+					useLinks.push(i);
+					findNodeByLinks(link.source, links, nodes, nodes_name);
+				 }
+				 
 			 }
 		} else{
-			return;
+			continue;
 		}
 	}
+	return;
 }
 function splitDiv(divNum) {
     let html = '';
@@ -214,8 +232,10 @@ function drawNode(webkitDep, myChart) {
         ]
     };
     myChart.setOption(option);
+	window.addEventListener('resize', function() {
+		myChart.resize();
+	})
 	myChart.on('click', function(params) {
-		var clickText = [params.data];
 		// console.log(params);
 		clickNodes = [params.data];
 		useLinks = []
