@@ -47,17 +47,23 @@ function drawAreaWord(provinceDate) {
                 },
                 series: [{
                     type: 'wordCloud',
-                    sizeRange: [15, 40],
+                    sizeRange: [15, 35],
                     rotationRange: [0, 0],  //设置为不旋转
-                    gridSize: 2,            //字符之间的间隔
+                    gridSize: 4,            //字符之间的间隔
                     shape: 'pentagon',
+                    left:'center',
+                    top:'center',
                     drawOutOfBound: false,
                     textStyle: {
                         //正常情况下的样式
                         normal:{
-                            color:function () {
-                                let colorArr = ['#1286ba','#d73027','#ffbb05', '#313695'];
-                                let colorIndex = Math.ceil(Math.random() * 3);
+                            color:function (info) {
+                                let colorIndex;
+                                let colorArr = ['#fdae61', '#f46d43', '#d73027', '#a50026'];
+                                if(info.data.value > 3)
+                                    colorIndex = 3;
+                                else
+                                    colorIndex = info.data.value;
                                 return colorArr[colorIndex];
                             }
                         },

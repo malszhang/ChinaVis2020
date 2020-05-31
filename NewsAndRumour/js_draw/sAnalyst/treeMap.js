@@ -9,7 +9,7 @@ function drawTreeMap(provinceDate) {
         treeMapChart.hideLoading();
         var formatUtil = echarts.format;
 
-        let province = provinceDate.province;;
+        let province = provinceDate.province;
         let time = provinceDate.date;
         
         let selectedData = [];
