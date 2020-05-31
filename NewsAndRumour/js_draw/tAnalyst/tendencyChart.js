@@ -253,7 +253,15 @@ function drawTendency() {
 				$.get('data/similarity.json', function (d) {
 					// var newsData = [];
 					var nodeName = [];
+					var links = [];
+					var forbidSource = ["r_296", "r_252", "r_349", "r_153", "r_119", "r_54", "r_206"]
 					d.links.forEach(function(link){
+						if (link.value > 0.7 &&  link.value < 0.95 
+						&& forbidSource.indexOf(link.source) == -1){
+							links.push(link);
+						}
+					})
+					links.forEach(function(link){
 						if (runumounsData.indexOf(link.source) != -1 &&
 						runumounsData.indexOf(link.target) == -1){
 							runumounsData.push(link.target);
@@ -262,25 +270,29 @@ function drawTendency() {
 						nodeName.push(link.source)
 					});
 					var nodes = [];
-					var categories = [[], []];
+					var categories = [];
 					var categories_name = [];
 					var reColor = []
 					var nodes_name = [];
 					d.nodes.forEach(function(node){
 						if (runumounsData.indexOf(node.name) != -1
 						&& nodeName.indexOf(node.name) != -1){
-							node.symbolSize = 5
+							node.symbolSize = 10
+							node.draggable = true;
+							if (node.name[0] != 'n'){
+								links.forEach(function(link){
+									if (node.name == link.source ||
+									node.name == link.target){
+										if (node.symbolSize <= 80){
+											node.symbolSize += 5;
+										}
+									}
+								});
+							}
+							
 							nodes.push(node);
 							nodes_name.push(node.name);
-							node.draggable = true;
-							d.links.forEach(function(link){
-								if (node.name == link.source ||
-								node.name == link.target){
-									if (node.symbolSize <= 80){
-										node.symbolSize += 5;
-									}
-								}
-							});
+							
 							if (categories.indexOf(node.category) == -1){
 								// if (node.name[0] == 'n'){
 								// 	categories[0].push(node.category);
@@ -298,7 +310,7 @@ function drawTendency() {
 					var rData = {
 						categories: categories,
 						categories_name: categories_name,
-						links: d.links,
+						links: links,
 						nodes: nodes,
 						color: reColor,
 						nodes_name: nodes_name
