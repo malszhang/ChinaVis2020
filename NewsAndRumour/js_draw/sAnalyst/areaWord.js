@@ -1,13 +1,20 @@
-
+var thisColor = ['#74add1', '#313695', '#4575b4', '#abd9e9', '#fee090', '#d73027', '#fdae61', '#f46d43'];
+var cate = ['行业战疫', '境内疫情', '境外疫情', '政府行动', '辟谣', '事实', '误区', '谣言'];
+var themeColor = d3.scaleOrdinal()
+    .domain(cate)
+    .range(thisColor);
 function drawAreaWord(provinceDate) {
     var myChart = echarts.init(document.getElementById('areaWord'));
     function getList(wordList) {
         let list = [];
-        for (var i = 0; i < wordList.length; i++) {
-            list.push({
-                name: wordList[i].name,
-                value: Number(wordList[i].value)
-            })
+        for(let i = 0 ; i < wordList.length ; i++){
+            for(let j = 0 ; j < wordList[i].length ; j++){
+                list.push({
+                    name: wordList[i][j].name,
+                    value: Number(wordList[i][j].value),
+                    category:wordList[i][j].category
+                })
+            }
         }
         return list;
     }
@@ -17,7 +24,7 @@ function drawAreaWord(provinceDate) {
     $.get('data/countkeywords.json', function (data) {
         let province = provinceDate.province;
         let time = provinceDate.date;
-        let words;
+        let words = [];
         for(let i = 0;i<data.length;++i){
             if(data[i].province == province){
                 for(let j = 0;j<data[i].date.length;++j){
@@ -37,12 +44,16 @@ function drawAreaWord(provinceDate) {
                     left: 'left'
                 },
                 tooltip : {
-                    formatter:"热度:{c}",
+                    formatter:function (info) {
+                        let str = "类型:" + info.data.category + "<br>"
+                            + "热度:" + info.data.value;
+                        return str;
+                    },
                     backgroundColor:'rgba(255,255,255,0)',
                     textStyle:{
                         fontWeight:'bold',
                         fontSize:20,
-                        color:'#1286ba',
+                        color:'#e65457',
                     }
                 },
                 series: [{
@@ -58,13 +69,7 @@ function drawAreaWord(provinceDate) {
                         //正常情况下的样式
                         normal:{
                             color:function (info) {
-                                let colorIndex;
-                                let colorArr = ['#fdae61', '#f46d43', '#d73027', '#a50026'];
-                                if(info.data.value > 3)
-                                    colorIndex = 3;
-                                else
-                                    colorIndex = info.data.value;
-                                return colorArr[colorIndex];
+                                return themeColor(info.data.category);
                             }
                         },
                         //鼠标悬浮时的样式

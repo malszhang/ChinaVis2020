@@ -3,7 +3,11 @@ function drawTreeMap(provinceDate) {
     var dom = document.getElementById("treeMap");
     var treeMapChart = echarts.init(dom);
     var treeOption = null;
-
+    var thisColor = ['#74add1', '#313695', '#4575b4', '#abd9e9', '#fee090', '#d73027', '#fdae61', '#f46d43'];
+    var cate = ['行业战疫', '境内疫情', '境外疫情', '政府行动', '辟谣', '事实', '误区', '谣言'];
+    var themeColor = d3.scaleOrdinal()
+        .domain(cate)
+        .range(thisColor);
     treeMapChart.showLoading();
     $.get('data/textcategory.json', function (data) {
         treeMapChart.hideLoading();
@@ -26,10 +30,6 @@ function drawTreeMap(provinceDate) {
 
         treeMapChart.setOption(
             treeOption = {
-            title: {
-                text: province,
-                left: 'center'
-            },
             tooltip: {
                 formatter: function (info) {
                     var value = info.value;
@@ -47,7 +47,6 @@ function drawTreeMap(provinceDate) {
             },
             series: [
                 {
-                    name: province,
                     type: 'treemap',
                     label: {
                         show: true,
@@ -79,26 +78,14 @@ function drawTreeMap(provinceDate) {
 
 function getList(data){
     let list = [];
-    list.push({
-        name: '境内疫情',
-        value: Number(data['境内疫情'].value),
-        children:getChildren(data['境内疫情'].children)
-    });
-    list.push({
-        name: '境外疫情',
-        value: Number(data['境外疫情'].value),
-        children:getChildren(data['境外疫情'].children)
-    });
-    list.push({
-        name: '政府行动',
-        value: Number(data['政府行动'].value),
-        children:getChildren(data['政府行动'].children)
-    });
-    list.push({
-        name: '行业战疫',
-        value: Number(data['行业战疫'].value),
-        children:getChildren(data['行业战疫'].children)
-    });
+    let nameList = ['境内疫情','境外疫情','政府行动','行业战疫','谣言','辟谣','事实','误区'];
+    for(let i = 0 ; i < nameList.length ; i++){
+        list.push({
+            name: nameList[i],
+            value: Number(data[nameList[i]].value),
+            children:getChildren(data[nameList[i]].children)
+        });
+    }
     return list;
 }
 
