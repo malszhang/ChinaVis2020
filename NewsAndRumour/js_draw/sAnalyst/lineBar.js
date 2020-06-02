@@ -126,7 +126,7 @@ function drawLineBar(){
         let start = barChart.getOption().xAxis[0].data[startValue];
         let end = barChart.getOption().xAxis[0].data[endValue];
         setTimeRangeForHeat(start, end);
-
+        drawHeat(presentData);
     })
     window.addEventListener('resize', function() {
         barChart.resize();

@@ -6,6 +6,7 @@ function drawTreeMap(provinceDate) {
 
     treeMapChart.showLoading();
     $.get('data/textcategory.json', function (data) {
+        console.log(data);
         treeMapChart.hideLoading();
         var formatUtil = echarts.format;
 
