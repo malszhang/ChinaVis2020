@@ -23,6 +23,7 @@ var heatColor =
 // heatColor = heatColor.reverse();
 // var colorDomain = []; // 颜色的定义域 每省每日的舆情数值
 var colorScale = d3.scaleOrdinal(); //热力图颜色的比例尺
+
 $(document).ready(function () {
     let width = document.getElementById("heatMap").offsetWidth - heat_padding.left - heat_padding.right;
     let height = document.getElementById("heatMap").offsetHeight - heat_padding.top - heat_padding.bottom;
@@ -68,6 +69,7 @@ function drawHeatMap_tree(treeData, width, height) {
     root._y = heat_padding.left;
     update_tree(root);
 }
+
 /**
  * 绘制、更新树图
  * @param {*} source 更新的数据
@@ -296,7 +298,9 @@ function drawHeat(data) {
         .attr('class', function (d) {
             return d.date;
         })
-        .attr('x', 0)
+        .attr('x', function (d) {
+            return heat_padding.left * 1.5 + xScale(d.date);
+        })
         .attr('y', function (d) {
             for (let i = 0; i < mergeData.length; ++i) {
                 if (d.province === mergeData[i].province) {
@@ -346,6 +350,8 @@ function drawHeat(data) {
             return 7;
         })
         .style('stroke', 'black')
+        .style('stroke-opacity', 0.4)
+        .style('stroke-width', 0.4)
         .style('fill', function (d) {
             if (d.num !== 0) {
                 return colorScale(d.num);
@@ -614,24 +620,24 @@ function getMergeData(data) {
     return mergeData;
 }
 
-function deepCopy (obj, cache = []) {
+function deepCopy(obj, cache = []) {
     if (obj === null || typeof obj !== 'object') {
-      return obj
+        return obj
     }
     const hit = cache.filter(c => c.original === obj)[0]
     if (hit) {
-      return hit.copy
+        return hit.copy
     }
-  
-    const copy = Array.isArray(obj) ?  [] :   {}
+
+    const copy = Array.isArray(obj) ? [] : {}
 
     cache.push({
-      original: obj,
-      copy
+        original: obj,
+        copy
     })
     Object.keys(obj).forEach(key => {
-      copy[key] = deepCopy(obj[key], cache)
+        copy[key] = deepCopy(obj[key], cache)
     })
-  
-    return copy
-  }
+
+    return copy;
+}
