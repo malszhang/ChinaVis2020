@@ -11,21 +11,27 @@
 
 <body>
     <div id="app">
+		
+		<el-row :gutter="16">
+			<el-col :span="16">
+				<div class="grid-content-header grid-content2 bg-purple" id="event1"></div>
+			</el-col>
+			<el-col :span="8">
+				<div class="grid-content-header grid-content2 bg-purple" id="floorComponent"></div>
+			</el-col>
+		</el-row>
+		<el-row :gutter="16">
+			<el-col :span="16">
+				<div class="grid-content-header grid-content2 bg-purple" id="event2"></div>
+			</el-col>
+			<el-col :span="8">
+				<div class="grid-content-header grid-content2 bg-purple" id="floorComponent"></div>
+			</el-col>
+		</el-row>
 		<el-row :gutter="16">
 				<el-col :span="24">
 					<div class="grid-content-header grid-content1 bg-purple" id="fTotal"></div>
 				</el-col>
-		</el-row>
-		<el-row :gutter="16">
-			<el-col :span="8">
-				<div class="grid-content-header grid-content2 bg-purple" id="doorComponent"></div>
-			</el-col>
-			<el-col :span="8">
-				<div class="grid-content-header grid-content2 bg-purple" id="floorComponent"></div>
-			</el-col>
-			<el-col :span="8">
-				<div class="grid-content-header grid-content2 bg-purple" id="floorComponent"></div>
-			</el-col>
 		</el-row>
     </div>
 	<style>
@@ -46,11 +52,11 @@
 	  } */
 	  .grid-content1 {
 	    border-radius: 4px;
-	    min-height: 58%;
+	    min-height: 20%;
 	  }
 	  .grid-content2 {
 	    border-radius: 4px;
-	    min-height: 38%;
+	    min-height: 35%;
 	  }
 	  .row-bg {
 	    padding: 10px 0;
@@ -62,14 +68,14 @@
     <script type="text/javascript" src="../lib/elementui/index.js"></script>
     <script type="text/javascript" src="../lib/jquery.js"></script>
     <script type="text/javascript" src="../lib/echarts.min.js"></script>
-    <script type="text/javascript" src="../lib/d3.min.js"></script>
-    <script type="text/javascript" src="../js/tendencyChart.js"></script>
-    <script type="text/javascript" src="../js/themeBubble.js"></script>
+    <script type="text/javascript" src="../js_draw/eAnalyst/drawStair.js"></script>
     <script type="text/javascript">
         new Vue({
             el: "#app",
             mounted() {
-                drawTendency();
+				$.get('data/data.json', function (d) {
+					drawStair("event1", "title", d.data, d.time);
+				})
             }
         });
     </script>
