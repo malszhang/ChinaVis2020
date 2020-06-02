@@ -73,8 +73,9 @@
         new Vue({
             el: "#app",
             mounted() {
-                drawStair("event1");
-				drawStair("event2");
+				$.get('data/data.json', function (d) {
+					drawStair("event1", "title", d.data, d.time);
+				})
             }
         });
     </script>
