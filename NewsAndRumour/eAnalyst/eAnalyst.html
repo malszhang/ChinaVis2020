@@ -14,7 +14,7 @@
 		
 		<el-row :gutter="16">
 			<el-col :span="16">
-				<div class="grid-content-header grid-content2 bg-purple" id="doorComponent"></div>
+				<div class="grid-content-header grid-content2 bg-purple" id="event1"></div>
 			</el-col>
 			<el-col :span="8">
 				<div class="grid-content-header grid-content2 bg-purple" id="floorComponent"></div>
@@ -22,7 +22,7 @@
 		</el-row>
 		<el-row :gutter="16">
 			<el-col :span="16">
-				<div class="grid-content-header grid-content2 bg-purple" id="doorComponent"></div>
+				<div class="grid-content-header grid-content2 bg-purple" id="event2"></div>
 			</el-col>
 			<el-col :span="8">
 				<div class="grid-content-header grid-content2 bg-purple" id="floorComponent"></div>
@@ -68,13 +68,13 @@
     <script type="text/javascript" src="../lib/elementui/index.js"></script>
     <script type="text/javascript" src="../lib/jquery.js"></script>
     <script type="text/javascript" src="../lib/echarts.min.js"></script>
-    <script type="text/javascript" src="../lib/d3.min.js"></script>
     <script type="text/javascript" src="../js_draw/eAnalyst/drawStair.js"></script>
     <script type="text/javascript">
         new Vue({
             el: "#app",
             mounted() {
-                
+                drawStair("event1");
+				drawStair("event2");
             }
         });
     </script>
