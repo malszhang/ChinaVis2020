@@ -98,6 +98,7 @@ function drawLineBar(){
                     type: 'line',
                     yAxisIndex: 0,
                     data: calculateMA(0, data),
+                    color:'#F46D43',
                     showSymbol: false,
                     smooth: true,
                     z:999
@@ -107,6 +108,7 @@ function drawLineBar(){
                     type: 'bar',
                     yAxisIndex: 1,
                     data: calculateMA(1, data),
+                    color:'#4575b4',
                     barMinWidth:3,
                     barMaxWidth:15,
                     showSymbol: false,
