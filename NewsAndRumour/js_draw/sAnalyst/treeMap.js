@@ -1,16 +1,9 @@
 function drawTreeMap(provinceDate) {
-
     var dom = document.getElementById("treeMap");
     var treeMapChart = echarts.init(dom);
     var treeOption = null;
-    var thisColor = ['#74add1', '#313695', '#4575b4', '#abd9e9', '#fee090', '#d73027', '#fdae61', '#f46d43'];
-    var cate = ['行业战疫', '境内疫情', '境外疫情', '政府行动', '辟谣', '事实', '误区', '谣言'];
-    var themeColor = d3.scaleOrdinal()
-        .domain(cate)
-        .range(thisColor);
     treeMapChart.showLoading();
     $.get('data/textcategory.json', function (data) {
-        console.log(data);
         treeMapChart.hideLoading();
         var formatUtil = echarts.format;
 
@@ -79,24 +72,25 @@ function drawTreeMap(provinceDate) {
 
 function getList(data){
     let list = [];
-    let nameList = ['境内疫情','境外疫情','政府行动','行业战疫','谣言','辟谣','事实','误区'];
+    let nameList = ['行业战疫', '境内疫情', '境外疫情', '政府行动', '辟谣', '事实', '误区', '谣言'];
     for(let i = 0 ; i < nameList.length ; i++){
         list.push({
             name: nameList[i],
+            id:nameList[i],
             value: Number(data[nameList[i]].value),
-            children:getChildren(data[nameList[i]].children)
+            children:getChildren(data[nameList[i]].children,nameList[i])
         });
     }
     return list;
 }
 
-function getChildren(childrenList) {
-
+function getChildren(childrenList,id) {
     let children = [];
     for(let i = 0 ; i < childrenList.length ; i++){
         children.push({
+            id:id,
             name:childrenList[i].name,
-            value:childrenList[i].value
+            value:childrenList[i].value,
         })
     }
     return children;
@@ -105,8 +99,10 @@ function getChildren(childrenList) {
 function getLevelOption() {
     return [
         {
+            color:['#74add1', '#313695', '#4575b4', '#abd9e9', '#fee090', '#d73027', '#fdae61', '#f46d43'],
+            colorMappingBy: 'id',
             itemStyle: {
-                borderColor: '#777',
+                borderColor: '#039e6d',
                 borderWidth: 0,
                 gapWidth: 1
             },
@@ -116,7 +112,7 @@ function getLevelOption() {
         },
         {
             itemStyle: {
-                borderColor: '#555',
+                borderColor: '#037c55',
                 borderWidth: 5,
                 gapWidth: 1
             },
@@ -124,14 +120,6 @@ function getLevelOption() {
                 itemStyle: {
                     borderColor: '#ddd'
                 }
-            }
-        },
-        {
-            colorSaturation: [0.35, 0.5],
-            itemStyle: {
-                borderWidth: 5,
-                gapWidth: 1,
-                borderColorSaturation: 0.6
             }
         }
     ];
