@@ -40,7 +40,7 @@ function drawAreaWord(provinceDate) {
 
             myChart.setOption({
                 title: {
-                    text: '省份:' + province + '\n' + '时间:' + time,
+                    text: time + ' ' + province,
                     left: 'left'
                 },
                 tooltip : {

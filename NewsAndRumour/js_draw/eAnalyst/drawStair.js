@@ -1,4 +1,4 @@
-function drawStair(idName, title, data, time) {
+function drawStair(idName, title, data, time, line) {
 	var dom = document.getElementById(idName);
 	var myChart = echarts.init(dom);
 	// var xAxisData = [];
@@ -20,29 +20,68 @@ function drawStair(idName, title, data, time) {
 			text: title
 		},
 		legend: {
-			data: []
+			data: ["每日新增"]
 		},
-		toolbox: {
-			// y: 'bottom',
-			feature: {
-				magicType: {
-					type: ['stack', 'tiled']
-				},
-				dataView: {},
-				saveAsImage: {
-					pixelRatio: 2
-				}
+		tooltip: {
+			trigger: 'axis',
+			// axisPointer: {
+			// 	type: 'cross'
+			// },
+			formatter: function(obj) {
+				var str = "";
+				obj.forEach(function(d) {
+					if (d.seriesType != "line") {
+						str += d.data.value[0] + "<br>";
+						str += d.data.text + "<br>";
+					}
+					if (d.seriesType == "line") {
+						str += "新增人数：" + d.data[1] + "<br>"
+					}
+
+				})
+				return str;
+				// return str;
 			}
 		},
-		tooltip: {},
 		xAxis: {
 			data: time,
-			splitLine: {
-				show: false
-			}
+			// splitLine: {
+			// 	show: false
+			// },
+			// show: false
 		},
-		yAxis: {},
-		series: [],
+		// angleAxis: {
+		// 	type: 'category',
+		// 	data: time
+		// },
+		// grid: {
+		// 	top: 100
+		// },
+		// polar: {
+		// 	min: -1
+		// },
+		yAxis: [{
+			min:-15148,
+			max: 15148,
+			show: false
+		},{
+			min: -2,
+			max: 2,
+			show: false
+		}],
+
+		series: [
+				{
+				name: "每日新增",
+				type: "line",
+				smooth: true,
+				data: line,
+				yAxisIndex: 0,
+				animationDelay: function(idx) {
+					return idx * 10 + 100;
+				}
+			},
+		],
 		animationEasing: 'elasticOut',
 		animationDelayUpdate: function(idx) {
 			return idx * 5;
@@ -55,29 +94,32 @@ function drawStair(idName, title, data, time) {
 			name: d.name,
 			type: 'bar',
 			data: d.data,
-			barGap: 0,
-			barWidth: 10,
+			stack: 'a',
+			// coordinateSystem: 'polar',
+			yAxisIndex: 1,
+			// barGap: 0,
+			// barWidth: 10,
 			animationDelay: function(idx) {
 				return idx * 10 + 100;
 			}
 		})
 		// })
-		option.series.push({
-			name: d.name,
-			type: 'scatter',
-			data: d.data,
-			symbol: 'circle',
+		// option.series.push({
+		// 	name: d.name,
+		// 	type: 'scatter',
+		// 	data: d.data,
+		// 	symbol: 'circle',
 
-			itemStyle: {
-				color: '#fff',
-				borderWidth: 2,
-				borderColor: '#f00'
-			},
-			// symbolSize: 10,
-			animationDelay: function(idx) {
-				return idx * 10 + 100;
-			}
-		})
+		// 	itemStyle: {
+		// 		color: '#fff',
+		// 		borderWidth: 2,
+		// 		borderColor: '#f00'
+		// 	},
+		// 	// symbolSize: 10,
+		// 	animationDelay: function(idx) {
+		// 		return idx * 10 + 100;
+		// 	}
+		// })
 	})
 	if (option && typeof option === "object") {
 		myChart.setOption(option, true);
