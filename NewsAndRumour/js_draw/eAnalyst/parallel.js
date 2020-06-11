@@ -23,7 +23,7 @@ function drawParallel(data) {
     var line = d3.line();
 
     let xDomain = Object.keys(data[0]);
-    // xDomain.splice(0, 1);
+    xDomain.splice(0, 3);
 
     xScale = d3.scalePoint()
         .domain(xDomain)
@@ -73,7 +73,8 @@ function drawParallel(data) {
         .attr('class', 'foreground')
         .attr('d', path)
         .style("stroke", function (d, i) {
-            return "red";
+            // console.log(d);
+            return getColor(d);
         })
         .style("opacity", 0.5)
         .style("fill", "none");
@@ -135,10 +136,9 @@ function brushEnd() {
                 } else flag = flag && false;
             });
             if (flag == true) {
-                selectName.push(d.name);
+                selectName.push(d.title);
                 return null;
             } else return "none";
         });
     para_brush(selectName);
-
 }
