@@ -11,6 +11,7 @@ var xScale;
  * @param {*} data 
  */
 function drawParallel(data) {
+    console.log(data);
     let para_height = document.getElementById('parallelChart').offsetHeight - para_padding.top - para_padding.bottom;
     let para_width = document.getElementById('parallelChart').offsetWidth - para_padding.left - para_padding.right;
     // 设置svg

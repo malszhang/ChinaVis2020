@@ -95,7 +95,6 @@
       mounted() {
         $.get('data/复工复学2.json', function (data) {
 
-          var time = [];
           var para_data = [];
           for (let i = 0; i < data.nodes.length; ++i) {
             var json = {};
@@ -104,66 +103,13 @@
             json['emotion'] = data.nodes[i].emotion;
             var keys = Object.keys(data.nodes[i]);
             for (let j = 6; j < 10; ++j) {
+              // console.log(data.nodes[i][keys[j]]);
               json[keys[j]] = data.nodes[i][keys[j]];
             }
-            
             para_data.push(json);
-            time.push(data.nodes[i].date);
           }
-          drawSankey(data, time);
+          drawSankey(data);
           drawParallel(para_data);
-          // for (let i = 0; i < data.nodes.length; ++i) {
-          //   data.nodes[i].name = data.nodes[i].title;
-          // }
-
-          // for (let i = 0; i < data.nodes.length; ++i) {
-          //   data.links[i].source = data.nodes[data.links[i].source].title;
-          //   data.links[i].target = data.nodes[data.links[i].target].title;
-          // }
-
-          // 
-
-          // let sankeyDOM = document.getElementById('sankeyChart');
-
-          // let sankeyChart = echarts.init(sankeyDOM);
-          // sankeyChart.setOption(option = {
-          //   title: {
-          //     text: 'Sankey Diagram'
-          //   },
-          //   tooltip: {
-          //     trigger: 'item',
-          //     triggerOn: 'mousemove'
-          //   },
-          //   series: [{
-          //     type: 'sankey',
-          //     data: data.nodes,
-          //     links: data.links,
-          //     focusNodeAdjacency: 'allEdges',
-          //     left: '3%',
-          //     right: '3%',
-          //     itemStyle: {
-          //       color: function (params) {
-          //         console.log(params.data);
-          //         if (params.data.theme == '复学&复工') {
-          //           return 'rgb(0,128,0)';
-          //         }
-          //         if (params.data.emotion == 1) {
-          //           return 'rgb(255,0,0)';
-          //         }
-          //         return 'rgb(0,0,255)';
-          //       },
-          //       borderWidth: 1,
-          //       borderColor: '#aaa'
-          //     },
-          //     lineStyle: {
-          //       color: 'source',
-          //       curveness: 0.5
-          //     },
-          //     label: {
-          //       show: false,
-          //     },
-          //   }]
-          // });
         });
       }
     });

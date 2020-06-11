@@ -6,14 +6,10 @@ var sankey_padding = {
 };
 
 
-function drawSankey(data, time) {
+function drawSankey(data) {
 
 	let sankey_height = document.getElementById('sankeyChart').offsetHeight - sankey_padding.top - sankey_padding.bottom;
 	let sankey_width = document.getElementById('sankeyChart').offsetWidth - sankey_padding.left - sankey_padding.right;
-
-	let timeScale = d3.scaleBand()
-		.domain(time)
-		.range([0, sankey_width]);
 
 	// 设置svg
 	let svg = d3.select('#sankeyChart')
@@ -54,17 +50,18 @@ function drawSankey(data, time) {
 		.append("path")
 		.attr("d", d3.sankeyLinkHorizontal())
 		.style('stroke', function(d) {
-			// console.log(d);
 			return getColor(d.source);
 		})
 		.style('opacity', 0.6)
-		.attr("stroke-width", function (d) {
+		.style("stroke-width", function (d) {
 			return Math.min(30, d.width);
-		});
+		})
+		.on('mouseover', linkMouseOver)
+		.on('mouseout', mouseOut);
 
 	link.append("title")
 		.text(function (d) {
-			return d.source.name + " → " + d.target.name + "\n";
+			return d.source.date + " → " + d.target.date + "\n";
 		});
 	//绘制节点
 	node = node
@@ -108,7 +105,9 @@ function drawSankey(data, time) {
 
 	node.append("title")
 		.text(function (d) {
-			return d.date + "\n";
+			return '时间：'+d.date + '\n'
+			+ '新闻标题：' + d.title + '\n'
+			+ '主题：' + d.theme + '\n';
 		});
 }
 
@@ -164,6 +163,23 @@ function mouseOut() {
 		.style('opacity', function (p) {
 			return 1;
 		});
+}
+
+function linkMouseOver(d) {
+	d3.select('.links').selectAll('path')
+	.style('opacity', function(p) {
+		if(p == d) {
+			return 1;
+		}
+		return 0.3;
+	});
+	d3.select('.nodes').selectAll('rect')
+	.style('opacity', function(p) {
+		if ((p == d.source) || (p == d.target)) {
+			return 1;
+		}
+		return 0.3;
+	});
 }
 
 function para_brush(selectedData) {

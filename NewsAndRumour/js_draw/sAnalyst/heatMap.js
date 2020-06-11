@@ -15,15 +15,21 @@ var yScale; //y轴的比例尺
 var startTime = '2019/12/22'; //框选时间的开始
 var endTime = '2020/5/23'; //框选时间的结束
 var presentData = []; // 热力图实时的数据
-var mergeData = [];  //合并省份之后的数据含位置信息
+var mergeData = []; //合并省份之后的数据含位置信息
 var rectWidth;
 var duration = 750;
-var heatColor =
-    // ['#722201', '#cc3e01', '#f16d2b', '#f59971', '#fec1a5'];
-    ['#313695', '#4575b4', '#74add1', '#abd9e9', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026'];
-// heatColor = heatColor.reverse();
-// var colorDomain = []; // 颜色的定义域 每省每日的舆情数值
-var colorScale = d3.scaleOrdinal(); //热力图颜色的比例尺
+var heatColor = [
+    '#e1e1e1', '#313695',
+    '#4575b4', '#74add1',
+    '#abd9e9', '#fee090',
+    '#fdae61', '#f46d43',
+    '#d73027', '#a50026'
+];
+var colorDomain = []; // 颜色的定义域 每省每日的舆情数值
+var colorScale = function (d) {
+    let index = parseInt(colorDomain.indexOf(d) / 2);
+    return heatColor[index];
+}; //热力图颜色的比例尺
 
 $(document).ready(function () {
     let width = document.getElementById("heatMap").offsetWidth - heat_padding.left - heat_padding.right;
@@ -259,8 +265,19 @@ function drawHeatMap_heat(data) {
     xScale = d3.scaleBand()
         .domain(xDomain)
         .range([0, heatWidth]);
-    let colorDomain = getcolorDomain(data);
-    colorScale.domain(colorDomain).range(heatColor);
+
+    colorDomain = getcolorDomain(data);
+
+    let newColorDomain = [];
+    for (let i = colorDomain.length - 1; i >= 0; --i) {
+        if (newColorDomain.indexOf(colorDomain[i]) == -1) {
+            newColorDomain.push(colorDomain[i]);
+        }
+    }
+    newColorDomain.sort(function (a, b) {
+        return a - b;
+    });
+    colorDomain = newColorDomain;
 
     d3.select(".heat_svg")
         .append('g')
@@ -323,7 +340,10 @@ function drawHeat(data) {
 
     groupEnter.append('svg:title')
         .text(function (d) {
-            return d.province + '(' + d.date + '):' + d.num;
+            return '地区：' + d.province + '\n' +
+                '时间：' + d.date + '\n' +
+                '热度：' + d.num + '\n' +
+                'color:' + colorScale(d.num)
         });
 
     let groupUpdate = groupEnter.merge(group);
@@ -583,7 +603,7 @@ function copyData(oldData, newData) {
 }
 
 function getMergeData(data) {
-    $.getJSON('data/areaCount.json',function(area) {
+    $.getJSON('data/areaCount.json', function (area) {
         mergeData = deepCopy(area);
         for (let i = 0; i < mergeData.length; ++i) {
             let selectedData = [];

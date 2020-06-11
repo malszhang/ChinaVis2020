@@ -5,4 +5,6 @@ var topic_padding = {
 	right: 5
 };
 
-function topic(name, )
+function topic(name, ) {
+	
+}
