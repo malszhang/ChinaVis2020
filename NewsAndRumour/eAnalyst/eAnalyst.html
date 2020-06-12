@@ -86,15 +86,17 @@
   <script type="text/javascript" src="../lib/echarts.min.js"></script>
   <script type="text/javascript" src="../lib/d3.v4.min.js"></script>
   <script type="text/javascript" src="../lib/d3-sanKey.js"></script>
+  <script type="text/javascript" src="../lib/echarts-wordcloud.min.js"></script>
   <script type="text/javascript" src="../js_draw/eAnalyst/topic.js"></script>
   <script type="text/javascript" src="../js_draw/eAnalyst/sankey.js"></script>
   <script type="text/javascript" src="../js_draw/eAnalyst/parallel.js"></script>
+  <script type="text/javascript" src="../js_draw/eAnalyst/wordCloud.js"></script>
   <script type="text/javascript">
     new Vue({
       el: "#app",
       mounted() {
         $.get('data/studyAndWork.json', function (data) {
-          console.log(data)
+          // console.log(data)
           var para_data = [];
           for (let i = 0; i < data.nodes.length; ++i) {
             var json = {};
