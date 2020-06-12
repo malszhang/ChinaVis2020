@@ -3,10 +3,8 @@ var cate = ['行业战疫', '境内疫情', '境外疫情', '政府行动', '辟
 var themeColor = d3.scaleOrdinal()
     .domain(cate)
     .range(thisColor);
-
 function drawAreaWord(provinceDate) {
     var myChart = echarts.init(document.getElementById('areaWord'));
-    //获取绘图数据
     function getList(wordList) {
         let list = [];
         for(let i = 0 ; i < wordList.length ; i++){
@@ -20,8 +18,9 @@ function drawAreaWord(provinceDate) {
         }
         return list;
     }
-    //通过ajax取数据
     myChart.showLoading();
+
+    //通过ajax取数据
     $.get('data/countkeywords.json', function (data) {
         let province = provinceDate.province;
         let time = provinceDate.date;
@@ -41,7 +40,7 @@ function drawAreaWord(provinceDate) {
 
             myChart.setOption({
                 title: {
-                    text: '地区:' + province + '\n' + '时间:' + time,
+                    text: time + ' ' + province,
                     left: 'left'
                 },
                 tooltip : {

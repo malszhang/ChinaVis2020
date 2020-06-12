@@ -15,14 +15,21 @@ var yScale; //y轴的比例尺
 var startTime = '2019/12/22'; //框选时间的开始
 var endTime = '2020/5/23'; //框选时间的结束
 var presentData = []; // 热力图实时的数据
-var mergeData = [];
+var mergeData = []; //合并省份之后的数据含位置信息
 var rectWidth;
-var heatColor =
-    // ['#722201', '#cc3e01', '#f16d2b', '#f59971', '#fec1a5'];
-    ['#313695', '#4575b4', '#74add1', '#abd9e9', '#fee090', '#fdae61', '#f46d43', '#d73027', '#a50026'];
-// heatColor = heatColor.reverse();
-// var colorDomain = []; // 颜色的定义域 每省每日的舆情数值
-var colorScale = d3.scaleOrdinal(); //热力图颜色的比例尺
+var duration = 750;
+var heatColor = [
+    '#e1e1e1', '#313695',
+    '#4575b4', '#74add1',
+    '#abd9e9', '#fee090',
+    '#fdae61', '#f46d43',
+    '#d73027', '#a50026'
+];
+var colorDomain = []; // 颜色的定义域 每省每日的舆情数值
+var colorScale = function (d) {
+    let index = parseInt(colorDomain.indexOf(d) / 2);
+    return heatColor[index];
+}; //热力图颜色的比例尺
 
 $(document).ready(function () {
     let width = document.getElementById("heatMap").offsetWidth - heat_padding.left - heat_padding.right;
@@ -37,7 +44,7 @@ $(document).ready(function () {
         .attr("transform", "translate(" + heat_padding.left + "," + heat_padding.top + ")")
         .attr("id", "tree_g");
 
-    d3.json("data/province.json", function (error, treeData) {
+    $.getJSON("data/province.json", function (treeData) {
         drawHeatMap_tree(treeData, width, height);
     });
     $.getJSON('data/provinceCount.json', function (data) {
@@ -139,7 +146,7 @@ function update_tree(source) {
     let nodeUpdate = nodeEnter.merge(node);
 
     nodeUpdate.transition()
-        .duration(750)
+        .duration(duration)
         .attr("transform", function (d) {
             return "translate(" + d.y + "," + d.x + ")";
         });
@@ -153,7 +160,7 @@ function update_tree(source) {
 
     // ***********删除的节点********
     let nodeExit = node.exit().transition()
-        .duration(750)
+        .duration(duration)
         .attr("transform", function (d) {
             return "translate(" + source.y + "," + source.x + ")";
         })
@@ -184,13 +191,13 @@ function update_tree(source) {
     var linkUpdate = linkEnter.merge(link);
     // ***********连线动画过渡*******
     linkUpdate.transition()
-        .duration(750)
+        .duration(duration)
         .attr('d', function (d) {
             return diagonal(d, d.parent);
         });
     // ************删除的连线************
     var linkExit = link.exit().transition()
-        .duration(750)
+        .duration(duration)
         .attr('d', function (d) {
             var o = {
                 x: source.x,
@@ -258,8 +265,19 @@ function drawHeatMap_heat(data) {
     xScale = d3.scaleBand()
         .domain(xDomain)
         .range([0, heatWidth]);
-    let colorDomain = getcolorDomain(data);
-    colorScale.domain(colorDomain).range(heatColor);
+
+    colorDomain = getcolorDomain(data);
+
+    let newColorDomain = [];
+    for (let i = colorDomain.length - 1; i >= 0; --i) {
+        if (newColorDomain.indexOf(colorDomain[i]) == -1) {
+            newColorDomain.push(colorDomain[i]);
+        }
+    }
+    newColorDomain.sort(function (a, b) {
+        return a - b;
+    });
+    colorDomain = newColorDomain;
 
     d3.select(".heat_svg")
         .append('g')
@@ -322,12 +340,16 @@ function drawHeat(data) {
 
     groupEnter.append('svg:title')
         .text(function (d) {
-            return d.province + '(' + d.date + '):' + d.num;
+            return '地区：' + d.province + '\n' +
+                '时间：' + d.date + '\n' +
+                '热度：' + d.num + '\n' +
+                'color:' + colorScale(d.num)
         });
 
     let groupUpdate = groupEnter.merge(group);
 
     groupUpdate.transition()
+        .duration(duration)
         .attr('x', function (d) {
             return heat_padding.left * 1.5 + xScale(d.date);
         })
@@ -339,7 +361,6 @@ function drawHeat(data) {
             }
             return yScale(d.province) - 3.5;
         })
-        .duration(750)
         .attr('width', rectWidth)
         .attr('height', function (d) {
             for (let i = 0; i < mergeData.length; ++i) {
@@ -397,7 +418,7 @@ function mergeProvince(data) {
         heat_g.select('.' + data[i].name)
             .selectAll('rect')
             .transition()
-            .duration(750)
+            .duration(duration)
             .attr('height', function (d) {
                 return 0;
             })
@@ -406,7 +427,7 @@ function mergeProvince(data) {
         // 删除<g>标签
         heat_g.select('.' + data[i].name)
             .transition()
-            .duration(750)
+            .duration(duration)
             .remove();
     }
     // 绘制合并之后的矩形
@@ -455,14 +476,14 @@ function expandProvince(data) {
     heat_g.select('.' + data[0].parent)
         .selectAll('rect')
         .transition()
-        .duration(750)
+        .duration(duration)
         .attr('height', 0)
         .remove();
 
     //删除group
     heat_g.select('.' + data[0].parent)
         .transition()
-        .duration(750)
+        .duration(duration)
         .remove();
 
     let expandData = [];
@@ -582,42 +603,21 @@ function copyData(oldData, newData) {
 }
 
 function getMergeData(data) {
-    data.forEach(function (d) {
-        let json = {
-            province: d.parent,
-            date: [],
-            rectHeight: 0
-        }
-        if (JSON.stringify(mergeData).indexOf(JSON.stringify(json)) == -1) {
-            mergeData.push(json);
-        }
-    });
-    for (let i = 0; i < mergeData.length; ++i) {
-        for (let j = 0; j < data[0].date.length; ++j) {
-            let nums = [];
-            data.forEach(function (d) {
-                if (mergeData[i].province === d.parent) {
-                    nums.push(d.date[j].num);
+    $.getJSON('data/areaCount.json', function (area) {
+        mergeData = deepCopy(area);
+        for (let i = 0; i < mergeData.length; ++i) {
+            let selectedData = [];
+            for (let j = 0; j < data.length; ++j) {
+                if (mergeData[i].province === data[j].parent) {
+                    selectedData.push(data[j]);
                 }
-            });
-            mergeData[i].date[j] = {
-                date: data[0].date[j].date,
-                num: d3.sum(nums)
-            };
-        }
-    }
-    for (let i = 0; i < mergeData.length; ++i) {
-        let selectedData = [];
-        for (let j = 0; j < data.length; ++j) {
-            if (mergeData[i].province === data[j].parent) {
-                selectedData.push(data[j]);
             }
+            mergeData[i].rectHeight = (yScale(selectedData[selectedData.length - 1].province) - yScale(selectedData[0].province));
+            mergeData[i].yStart = yScale(selectedData[0].province);
+            mergeData[i]._date = deepCopy(mergeData[i].date);
         }
-        mergeData[i].rectHeight = (yScale(selectedData[selectedData.length - 1].province) - yScale(selectedData[0].province));
-        mergeData[i].yStart = yScale(selectedData[0].province);
-        mergeData[i]._date = deepCopy(mergeData[i].date);
-    }
-    return mergeData;
+        return mergeData;
+    });
 }
 
 function deepCopy(obj, cache = []) {
