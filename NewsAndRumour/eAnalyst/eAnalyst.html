@@ -15,10 +15,10 @@
     <el-row :gutter="8">
       <el-col :span="4" style="height: 70%;">
         <el-row>
-          <div class="grid-content-header grid-content2 bg-purple" id="topicStudy"></div>
+          <div class="grid-content-header grid-content2 bg-purple" id="topicWork"></div>
         </el-row>
         <el-row>
-          <div class="grid-content-header grid-content2 bg-purple" id="topicWork"></div>
+          <div class="grid-content-header grid-content2 bg-purple" id="topicStudy"></div>
         </el-row>
       </el-col>
       <el-col :span="20">
@@ -26,14 +26,14 @@
       </el-col>
     </el-row>
     <el-row :gutter="8" style="height: 27%; margin-bottom: 10px;">
-      <el-col :span="6">
-        <div class="grid-content-header grid-content1 bg-purple" id="bar"></div>
+      <el-col :span="4">
+        <div class="grid-content-header grid-content1 bg-purple" id="wordCloud"></div>
       </el-col>
       <el-col :span="12">
         <div class="grid-content-header grid-content1 bg-purple" id="parallelChart"></div>
       </el-col>
-      <el-col :span="6">
-        <div class="grid-content-header grid-content1 bg-purple" id="fTotal"></div>
+      <el-col :span="8">
+        <div class="grid-content-header grid-content1 bg-purple" id="relations"></div>
       </el-col>
     </el-row>
   </div>
@@ -86,15 +86,15 @@
   <script type="text/javascript" src="../lib/echarts.min.js"></script>
   <script type="text/javascript" src="../lib/d3.v4.min.js"></script>
   <script type="text/javascript" src="../lib/d3-sanKey.js"></script>
+  <script type="text/javascript" src="../js_draw/eAnalyst/topic.js"></script>
   <script type="text/javascript" src="../js_draw/eAnalyst/sankey.js"></script>
   <script type="text/javascript" src="../js_draw/eAnalyst/parallel.js"></script>
-  <!-- <script type="text/javascript" src="../js_draw/eAnalyst/drawStair.js"></script> -->
   <script type="text/javascript">
     new Vue({
       el: "#app",
       mounted() {
-        $.get('data/复工复学2.json', function (data) {
-
+        $.get('data/studyAndWork.json', function (data) {
+          console.log(data)
           var para_data = [];
           for (let i = 0; i < data.nodes.length; ++i) {
             var json = {};
@@ -103,13 +103,15 @@
             json['emotion'] = data.nodes[i].emotion;
             var keys = Object.keys(data.nodes[i]);
             for (let j = 6; j < 10; ++j) {
-              // console.log(data.nodes[i][keys[j]]);
               json[keys[j]] = data.nodes[i][keys[j]];
             }
             para_data.push(json);
           }
+          drawTopic('复学', 'topicStudy');
+          drawTopic('复工', 'topicWork');
           drawSankey(data);
           drawParallel(para_data);
+          dataGroup(data.nodes);
         });
       }
     });
