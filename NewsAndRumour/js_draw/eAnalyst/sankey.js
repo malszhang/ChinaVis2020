@@ -83,6 +83,7 @@ function drawSankey(data) {
 		})
 		.on('mouseover', mouseOver)
 		.on('mouseout', mouseOut)
+		.on('click', sankeyClick)
 		.attr("fill", getColor)
 		.attr("stroke", "#000");
 
@@ -181,16 +182,36 @@ function linkMouseOver(d) {
 		return 0.3;
 	});
 }
+/**
+ * 调用词云 先去重，在绘制
+ * @param {*} d 
+ */
+function sankeyClick(d) {
+	let keyword = d.keyword;
+    drawWordCloud(keyword);
+}
 
 function para_brush(selectedData) {
 	let nodes = d3.select('.nodes').selectAll('g');
+	let keyword = []; //平行坐标筛选的新闻的关键词，多个
 	nodes.selectAll('rect')
-		.attr('fill', function (d) {
-			let oldColor = d3.select(this).attr('fill');
+		.style('opacity', function (d) {
 			if (selectedData.indexOf(d.title) == -1) {
-				return 'gray';
-			} else return getColor(d);
+				return 0.3;
+			} 
+			else{
+				keyword.push(d.keyword);
+				return 1;
+			} 
 		});
+	/// ****************调用词云 先去重，在绘制***********
+	let list = [];
+	for(let i = 0 ; i < keyword.length ; i++){
+		for(let j = 0 ; j < keyword[i].length ; j++) {
+            list.push(keyword[i][j]);
+        }
+	}
+    drawWordCloud(list);
 }
 
 function getColor(d) {
