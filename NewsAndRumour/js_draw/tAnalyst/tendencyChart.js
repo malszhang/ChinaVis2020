@@ -43,10 +43,6 @@ function drawTendency() {
 	$.getJSON("data/news.json", function(rawData) {
 		var data = splitData(rawData[0]);
 		var option = {
-			title: {
-				text: 'demo',
-				left: 0
-			},
 			tooltip: {
 				trigger: 'axis',
 				axisPointer: {
