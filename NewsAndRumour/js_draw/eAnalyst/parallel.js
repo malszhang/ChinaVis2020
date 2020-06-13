@@ -74,10 +74,15 @@ function drawParallel(data) {
         .attr('class', 'foreground')
         .attr('d', path)
         .style("stroke", function (d, i) {
-            // console.log(d);
-            return getColor(d);
+            let label = d.theme;
+			if(d.emotion == 1) {
+				label = label + '+';
+			}
+			else label = label + '-';
+			if(d.theme == '复学&复工') label = '复学&复工';
+			return getColor(label);
         })
-        .style("opacity", 0.5)
+        .style("opacity", 0.7)
         .style("fill", "none");
 
     let gaxis = svg.selectAll('.dimensions')
@@ -142,4 +147,14 @@ function brushEnd() {
             } else return "none";
         });
     para_brush(selectName);
+}
+
+function para_highLight(data) {
+    d3.selectAll(".foreground")
+    .style("display", function (d) {
+        if (d.title == data.title) {
+            return null;
+        }
+        return "none";
+    });
 }

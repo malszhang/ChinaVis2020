@@ -4,12 +4,13 @@ var sankey_padding = {
 	bottom: 5,
 	right: 5
 };
-
+var sankey_height,
+	sankey_width;
 
 function drawSankey(data) {
 
-	let sankey_height = document.getElementById('sankeyChart').offsetHeight - sankey_padding.top - sankey_padding.bottom;
-	let sankey_width = document.getElementById('sankeyChart').offsetWidth - sankey_padding.left - sankey_padding.right;
+	sankey_height = document.getElementById('sankeyChart').offsetHeight - sankey_padding.top - sankey_padding.bottom;
+	sankey_width = document.getElementById('sankeyChart').offsetWidth - sankey_padding.left - sankey_padding.right;
 
 	// 设置svg
 	let svg = d3.select('#sankeyChart')
@@ -49,8 +50,14 @@ function drawSankey(data) {
 		.enter()
 		.append("path")
 		.attr("d", d3.sankeyLinkHorizontal())
-		.style('stroke', function(d) {
-			return getColor(d.source);
+		.style('stroke', function (d) {
+			let label = d.source.theme;
+			if(d.source.emotion == 1) {
+				label = label + '+';
+			}
+			else label = label + '-';
+			if(d.source.theme == '复学&复工') label = '复学&复工';
+			return getColor(label);
 		})
 		.style('opacity', 0.6)
 		.style("stroke-width", function (d) {
@@ -84,7 +91,15 @@ function drawSankey(data) {
 		.on('mouseover', mouseOver)
 		.on('mouseout', mouseOut)
 		.on('click', sankeyClick)
-		.attr("fill", getColor)
+		.attr("fill", d => {
+			let label = d.theme;
+			if(d.emotion == 1) {
+				label = label + '+';
+			}
+			else label = label + '-';
+			if(d.theme == '复学&复工') label = '复学&复工';
+			return getColor(label);
+		})
 		.attr("stroke", "#000");
 
 	node.append("text")
@@ -106,10 +121,12 @@ function drawSankey(data) {
 
 	node.append("title")
 		.text(function (d) {
-			return '时间：'+d.date + '\n'
-			+ '新闻标题：' + d.title + '\n'
-			+ '主题：' + d.theme + '\n';
+			return '时间：' + d.date + '\n' +
+				'新闻标题：' + d.title + '\n' +
+				'主题：' + d.theme + '\n';
 		});
+
+	setLabel();
 }
 
 function mouseOver(d) {
@@ -168,19 +185,19 @@ function mouseOut() {
 
 function linkMouseOver(d) {
 	d3.select('.links').selectAll('path')
-	.style('opacity', function(p) {
-		if(p == d) {
-			return 1;
-		}
-		return 0.3;
-	});
+		.style('opacity', function (p) {
+			if (p == d) {
+				return 1;
+			}
+			return 0.3;
+		});
 	d3.select('.nodes').selectAll('rect')
-	.style('opacity', function(p) {
-		if ((p == d.source) || (p == d.target)) {
-			return 1;
-		}
-		return 0.3;
-	});
+		.style('opacity', function (p) {
+			if ((p == d.source) || (p == d.target)) {
+				return 1;
+			}
+			return 0.3;
+		});
 }
 /**
  * 调用词云 先去重，在绘制
@@ -188,7 +205,8 @@ function linkMouseOver(d) {
  */
 function sankeyClick(d) {
 	let keyword = d.keyword;
-    drawWordCloud(keyword);
+	drawWordCloud(keyword);
+	para_highLight(d);
 }
 
 function para_brush(selectedData) {
@@ -198,28 +216,75 @@ function para_brush(selectedData) {
 		.style('opacity', function (d) {
 			if (selectedData.indexOf(d.title) == -1) {
 				return 0.3;
-			} 
-			else{
+			} else {
 				keyword.push(d.keyword);
 				return 1;
-			} 
+			}
 		});
 	/// ****************调用词云 先去重，在绘制***********
 	let list = [];
-	for(let i = 0 ; i < keyword.length ; i++){
-		for(let j = 0 ; j < keyword[i].length ; j++) {
-            list.push(keyword[i][j]);
-        }
+	for (let i = 0; i < keyword.length; i++) {
+		for (let j = 0; j < keyword[i].length; j++) {
+			list.push(keyword[i][j]);
+		}
 	}
-    drawWordCloud(list);
+	drawWordCloud(list);
 }
 
 function getColor(d) {
-	if (d.theme == '复学&复工') {
-		return 'green';
-	}
-	if (d.emotion == 1) {
-		return 'red';
-	}
-	return 'blue';
+	let color = ['#ffbe0b', '#fb5607', '#ff006e', "#8338ec","#3a86ff"];
+	let label = ['复学+', '复学-', '复工+', '复工-', '复学&复工'];
+	let index = label.indexOf(d);
+	return color[index];
+}
+
+function setLabel() {
+	let label = ['复学+', '复学-', '复工+', '复工-', '复学&复工'];
+	let svg = d3.select('.sankey_svg');
+	let leftPosition = sankey_width * 0.95;
+	let top = sankey_padding.top * 3;
+	let labelWidth = 10;
+	let labelHeight = 10;
+	let fontSzie = 12;
+
+	let labels = svg.selectAll('.label')
+		.data(label)
+		.enter()
+		.append('g')
+		.attr('class', d => {
+			return d;
+		});
+
+	labels.append('text')
+		.attr("transform", (d, i) => {
+			return 'translate(' + leftPosition + ',' + (top + i * labelHeight * 2) + ')';
+		})
+		.text(String)
+		.style('font-size', fontSzie);
+
+	labels.append('rect')
+		.attr('x', leftPosition - labelWidth * 1.5)
+		.attr('y', (d, i) => {
+			return top + i * labelHeight * 2 - labelHeight;
+		})
+		.attr('width', labelWidth)
+		.attr('height', labelHeight)
+		.style('fill', d => {
+			return getColor(d);
+		})
+}
+
+function highLightByCate(cate, topic) {
+	let keyword = [];
+	d3.select('.nodes')
+		.selectAll('rect')
+		.style('opacity', function (d) {
+			if((d.category == cate) && ((d.theme == topic)||(d.theme == '复学&复工'))) {
+				keyword = keyword.concat(d.keyword);
+				return 1;
+			}
+			return 0.3;
+		});
+
+	drawWordCloud(keyword);
 }
