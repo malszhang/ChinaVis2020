@@ -189,6 +189,7 @@ function linkMouseOver(d) {
 function sankeyClick(d) {
 	let keyword = d.keyword;
     drawWordCloud(keyword);
+	console.log(d)
 }
 
 function para_brush(selectedData) {
