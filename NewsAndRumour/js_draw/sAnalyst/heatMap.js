@@ -25,6 +25,14 @@ var heatColor = [
     '#fdae61', '#f46d43',
     '#d73027', '#a50026'
 ];
+// var heatColor = [
+//     '#80FFDB', '#72EFDD',
+//     '#64DFDF', '#56CFE1',
+//     '#48BFE3', '#4EA8DE',
+//     '#5390D9', '#5E60CE',
+//     '#6930C3', '#7400B8'
+// ];
+
 var colorDomain = []; // 颜色的定义域 每省每日的舆情数值
 var colorScale = function (d) {
     let index = parseInt(colorDomain.indexOf(d) / 2);

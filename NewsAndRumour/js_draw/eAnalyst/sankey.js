@@ -232,7 +232,7 @@ function para_brush(selectedData) {
 }
 
 function getColor(d) {
-	let color = ['#ffbe0b', '#fb5607', '#ff006e', "#8338ec","#3a86ff"];
+	let color = ['#EE6352', '#59CD90', '#3FA7D6', "#FAC05E","#F79D84"];
 	let label = ['复学+', '复学-', '复工+', '复工-', '复学&复工'];
 	let index = label.indexOf(d);
 	return color[index];
