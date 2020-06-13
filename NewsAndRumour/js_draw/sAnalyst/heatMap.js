@@ -342,8 +342,8 @@ function drawHeat(data) {
         .text(function (d) {
             return '地区：' + d.province + '\n' +
                 '时间：' + d.date + '\n' +
-                '热度：' + d.num + '\n' +
-                'color:' + colorScale(d.num)
+                '热度：' + d.num + '\n';// +
+                // 'color:' + colorScale(d.num)
         });
 
     let groupUpdate = groupEnter.merge(group);
