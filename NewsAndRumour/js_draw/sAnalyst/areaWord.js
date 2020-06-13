@@ -18,6 +18,17 @@ function drawAreaWord(provinceDate) {
         }
         return list;
     }
+    function uniqueArr(arr){
+        let Array = [];
+        let names = [];
+        for(let i = 0 ; i < arr.length ; i++){
+            if(names.indexOf(arr[i].name) === -1){
+                Array.push(arr[i]);
+                names.push(arr[i].name);
+            }
+        }
+        return Array;
+    }
     myChart.showLoading();
 
     //通过ajax取数据
@@ -36,8 +47,8 @@ function drawAreaWord(provinceDate) {
         }
         //ajax请求成功时执行
         window.onload = setTimeout(function () {
-            var list = getList(words);
-
+            let list = getList(words);
+            let newlist = uniqueArr(list);
             myChart.setOption({
                 title: {
                     text: time + ' ' + province,
@@ -79,7 +90,7 @@ function drawAreaWord(provinceDate) {
                             color: '#00467A'
                         }
                     },
-                    data: list,
+                    data: newlist,
                 }]
             });
         }, 100)

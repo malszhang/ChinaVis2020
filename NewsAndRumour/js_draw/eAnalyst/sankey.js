@@ -188,6 +188,7 @@ function linkMouseOver(d) {
  */
 function sankeyClick(d) {
 	let keyword = d.keyword;
+    drawWordCloud(keyword);
 }
 
 function para_brush(selectedData) {
@@ -204,6 +205,13 @@ function para_brush(selectedData) {
 			} 
 		});
 	/// ****************调用词云 先去重，在绘制***********
+	let list = [];
+	for(let i = 0 ; i < keyword.length ; i++){
+		for(let j = 0 ; j < keyword[i].length ; j++) {
+            list.push(keyword[i][j]);
+        }
+	}
+    drawWordCloud(list);
 }
 
 function getColor(d) {

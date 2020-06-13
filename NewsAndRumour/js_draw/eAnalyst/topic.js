@@ -45,7 +45,7 @@ function dataGroup(data) {
 
 		staData.push(json);
 	}
-	console.log(staData);
+	// console.log(staData);
 
 	// for(let i = 0;i<statis.length;++i) {
 	// 	staData[statis[i]] = 0;
