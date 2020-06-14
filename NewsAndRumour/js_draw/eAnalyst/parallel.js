@@ -25,6 +25,7 @@ function drawParallel(data) {
 
     let xDomain = Object.keys(data[0]);
     xDomain.splice(0, 3);
+    console.log(xDomain);
 
     xScale = d3.scalePoint()
         .domain(xDomain)
@@ -50,6 +51,10 @@ function drawParallel(data) {
         .style("text-anchor", "middle")
         .style('font-size', 10)
         .text(d => {
+            if (d == '媒体个数') {
+                return '媒体/个';
+            }
+            else d += '/次';
             return d;
         });
 

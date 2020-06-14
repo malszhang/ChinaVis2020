@@ -168,7 +168,12 @@ function drawStackBar(data, svg, topicName) {
 			return 'translate(' + xScale(d) + ',' + topic_padding.top * 6 + ')';
 		})
 		.style('font-size', 10)
-		.text(String);
+		.text(d => {
+			if (d == '媒体个数') {
+				return '媒体';
+			}
+			return d;
+		});
 
 
 	let emotions = svg.selectAll('.emotion')
@@ -227,11 +232,11 @@ function drawStackBar(data, svg, topicName) {
 		.text(d => {
 			return d.name + "总数量：" + d.sum + "\n" +
 				'情感倾向：' + (d.emotion == -1 ? '消极' : '积极') + '\n' +
-				d.name + '数量：' + d.num + '\n' +
+				(d.name == '媒体个数' ? '媒体' : d.name) + '数量：' + d.num + (d.name == '媒体个数' ? '个' : '次')  + '\n' +
 				'占比：' + (d.num / d.sum * 100).toFixed(2) + '%';
 		})
 }
-
+d.name
 function topicClick(d) {
 	highLightByCate(d.category, d.topicName);
 }
