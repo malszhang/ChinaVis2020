@@ -241,11 +241,11 @@ function getColor(d) {
 function setLabel() {
 	let label = ['复学+', '复学-', '复工+', '复工-', '复学&复工'];
 	let svg = d3.select('.sankey_svg');
-	let leftPosition = sankey_width * 0.95;
+	let leftPosition = sankey_width * 0.91;
 	let top = sankey_padding.top * 3;
 	let labelWidth = 15;
 	let labelHeight = 15;
-	let fontSzie = 17;
+	let fontSzie = 19;
 
 	let labels = svg.selectAll('.label')
 		.data(label)
