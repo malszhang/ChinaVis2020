@@ -539,6 +539,7 @@ function getPresentHeatData(data, flag) {
                 if (presentData[i].province === data[j].name) {
                     presentData.splice(i, 1);
                     delDataIndex.unshift(i);
+                    break;
                 }
             }
         }
