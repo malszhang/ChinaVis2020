@@ -75,6 +75,7 @@ function drawTendency() {
 				bottom: '15%'
 			},
 			xAxis: {
+				// name:"时间",
 				type: 'category',
 				data: data.categoryData,
 				scale: true,
@@ -88,6 +89,7 @@ function drawTendency() {
 				
 			},
 			yAxis: [{
+				name:"累计人数",
 				scale: true,
 				splitNumber: 4,
                 splitArea: {
@@ -97,6 +99,7 @@ function drawTendency() {
                     show:false
                 }
 			}, {
+				name:"舆情数量",
 				scale: true,
                 splitArea: {
                     show: false

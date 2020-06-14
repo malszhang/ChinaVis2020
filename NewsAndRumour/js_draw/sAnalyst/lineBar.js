@@ -49,7 +49,7 @@ function drawLineBar(){
             yAxis: [
                 {
                     type: 'value',
-                    name: '新增确诊',
+                    name: '新增确诊人数',
                     minInterval: 500,
                     axisLabel: {
                         formatter: '{value}'
