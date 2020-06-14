@@ -243,9 +243,9 @@ function setLabel() {
 	let svg = d3.select('.sankey_svg');
 	let leftPosition = sankey_width * 0.95;
 	let top = sankey_padding.top * 3;
-	let labelWidth = 10;
-	let labelHeight = 10;
-	let fontSzie = 12;
+	let labelWidth = 15;
+	let labelHeight = 15;
+	let fontSzie = 17;
 
 	let labels = svg.selectAll('.label')
 		.data(label)
@@ -259,7 +259,15 @@ function setLabel() {
 		.attr("transform", (d, i) => {
 			return 'translate(' + leftPosition + ',' + (top + i * labelHeight * 2) + ')';
 		})
-		.text(String)
+		.text(d => {
+			let name = d.slice(0,2);
+			let emo = d.slice(2,5);
+			if (emo !== '&复工') {
+				return name + '(' + emo + ')';
+			}
+			else return d;
+			
+		})
 		.style('font-size', fontSzie);
 
 	labels.append('rect')

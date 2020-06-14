@@ -236,7 +236,6 @@ function drawStackBar(data, svg, topicName) {
 				'占比：' + (d.num / d.sum * 100).toFixed(2) + '%';
 		})
 }
-d.name
 function topicClick(d) {
 	highLightByCate(d.category, d.topicName);
 }

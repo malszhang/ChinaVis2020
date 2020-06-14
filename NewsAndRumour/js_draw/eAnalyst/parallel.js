@@ -25,18 +25,18 @@ function drawParallel(data) {
 
     let xDomain = Object.keys(data[0]);
     xDomain.splice(0, 3);
-    console.log(xDomain);
+    // console.log(xDomain);
 
     xScale = d3.scalePoint()
         .domain(xDomain)
-        .range([para_padding.left, para_width - para_padding.right], 1);
+        .range([para_padding.left * 1.5, para_width - para_padding.right], 1);
 
     xDomain.forEach(d => {
         yScale[d] = d3.scaleLinear()
             .domain(d3.extent(data, p => {
                 return +p[d];
             }))
-            .range([para_height, para_padding.top]);
+            .range([para_height + para_padding.top * 0.8, para_padding.top * 1.3]);
     });
 
     let labels = svg.selectAll('.label')
@@ -47,7 +47,7 @@ function drawParallel(data) {
             return 'translate('+ xScale(d) + ',' + para_padding.top +')';
         })
         .attr('dx', -10)
-        .attr('dy', -8)
+        .attr('dy', -5)
         .style("text-anchor", "middle")
         .style('font-size', 10)
         .text(d => {
